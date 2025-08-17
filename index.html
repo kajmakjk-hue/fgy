@@ -558,23 +558,147 @@
       padding: 8px;
     }
 
-    .card-item {
-      background: #1A1A1A;
-      border-radius: 12px;
-      padding: 16px;
-      margin-bottom: 12px;
-      color: #fff;
+    .carousel-wrap {
+      margin: 14px 0 6px;
+      overflow: hidden;
     }
 
-    .card-number {
-      font-size: 18px;
-      font-weight: 500;
-      margin-bottom: 4px;
+    .carousel {
+      display: flex;
+      gap: 14px;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      padding: 10px 12px 18px;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: thin;
+      scrollbar-color: var(--accent) transparent;
     }
 
-    .card-details {
+    .carousel::-webkit-scrollbar {
+      height: 6px;
+      display: block;
+    }
+
+    .carousel::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    .carousel::-webkit-scrollbar-thumb {
+      background-color: var(--accent);
+      border-radius: 3px;
+    }
+
+    .card-container {
+      perspective: 1000px;
+      flex: 0 0 auto;
+      width: clamp(200px, 75vw, 280px);
+      aspect-ratio: 85.6/53.98;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: transform 0.5s var(--ios-ease), opacity 0.3s var(--ios-ease);
+    }
+
+    .card-container.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .card-container:hover {
+      transform: translateY(-5px);
+    }
+
+    .card {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      border-radius: var(--card-radius);
+      padding: 12px;
+      background: linear-gradient(145deg,#141414,#0a0a0a);
+      border: .5px solid rgba(255,255,255,.08);
+      box-shadow: 0 10px 40px rgba(0,0,0,.55);
+      color: var(--text);
+      user-select: none;
+      backface-visibility: hidden;
+      scroll-snap-align: center;
+      transform-origin: center;
+      transition: transform 0.6s var(--ios-ease), box-shadow 0.3s var(--ios-ease);
+      transform-style: preserve-3d;
+      cursor: pointer;
+    }
+
+    .card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 15px 50px rgba(0,0,0,.65);
+    }
+
+    .card:active {
+      animation: pulse 0.3s var(--ios-ease);
+    }
+
+    .card.flipped {
+      transform: rotateY(180deg);
+    }
+
+    .card.unflipping {
+      animation: unflip 0.6s var(--ios-ease) forwards;
+    }
+
+    .card-front, .card-back {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      backface-visibility: hidden;
+      border-radius: var(--card-radius);
+    }
+
+    .card-back {
+      transform: rotateY(180deg);
+      background: linear-gradient(145deg, #0a0a0a, #141414);
+    }
+
+    .card-back::before {
+      content: "";
+      position: absolute;
+      top: 20px;
+      left: 0;
+      right: 0;
+      height: 40px;
+      background: rgba(0,0,0,.5);
+    }
+
+    .card-cvc {
+      align-self: flex-end;
+      margin-top: auto;
+      padding: 6px 10px;
+      background: white;
+      color: black;
+      border-radius: 4px;
+      font-family: monospace;
       font-size: 14px;
-      color: #aaa;
+    }
+
+    .card-number-back {
+      font-family: monospace;
+      letter-spacing: 1px;
+      font-size: 14px;
+      text-align: center;
+      margin-top: 60px;
+    }
+
+    .card.placeholder {
+      background: #444;
+      color: #ccc;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      font-size: 16px;
     }
 
     .add-card-btn {
@@ -584,7 +708,7 @@
       padding: 16px;
       text-align: center;
       color: #aaa;
-      margin-bottom: 24px;
+      margin: 16px 0;
       cursor: pointer;
       transition: all 0.2s;
     }
@@ -989,7 +1113,7 @@
     </div>
   </div>
 
-  <!-- Обновленная страница пополнения -->
+  <!-- Обновленная страница пополнения с каруселью карт -->
   <div id="payment-page">
     <div class="payment-container">
       <div class="payment-header">
@@ -998,12 +1122,12 @@
         <div style="width:40px;"></div>
       </div>
 
-      <!-- Карты -->
-      <div class="card-item">
-        <div class="card-number">•••• •••• •••• 3456</div>
-        <div class="card-details">IVAN IVANOV 09/27</div>
+      <!-- Карусель карт -->
+      <div class="carousel-wrap">
+        <div class="carousel" id="carousel"></div>
       </div>
 
+      <!-- Кнопка добавления карты -->
       <div class="add-card-btn" onclick="showAddCardModal()">
         Внести данные
       </div>
@@ -1401,6 +1525,14 @@
   let exchangeRate = 75;
   let selectedCard = 0;
 
+  // Цвета для разных типов карт
+  const cardColors = {
+    'VISA': ['#1a1a2e', '#16213e'],
+    'MC': ['#191919', '#3a3a3a'],
+    'AMEX': ['#006fcf', '#003f7f'],
+    'MIR': ['#1a3e8c', '#0d2b6b']
+  };
+
   // Форматирование валюты
   function formatCurrency(amount, currency) {
     return new Intl.NumberFormat('ru-RU', {
@@ -1415,6 +1547,76 @@
     if (amount <= 1000) return 0.03; // 3%
     if (amount <= 5000) return 0.025; // 2.5%
     return 0.02; // 2%
+  }
+
+  // Рендер карусели карт
+  function renderCarousel() {
+    const carousel = document.getElementById('carousel');
+    carousel.innerHTML = '';
+    
+    cards.forEach((card, index) => {
+      const container = document.createElement('div');
+      container.className = 'card-container';
+      container.style.transitionDelay = `${index * 0.1}s`;
+      
+      const cardElement = document.createElement('div');
+      cardElement.className = 'card';
+      cardElement.dataset.index = index;
+      cardElement.dataset.id = card.id;
+      
+      cardElement.innerHTML = `
+        <div class="card-front" style="background: linear-gradient(145deg, ${cardColors[card.brand]?.[0] || '#141414'}, ${cardColors[card.brand]?.[1] || '#0a0a0a'});">
+          <div class="top">
+            <div class="chip">💳</div>
+            <div class="network">${card.brand}</div>
+          </div>
+          <div class="number">${card.number}</div>
+          <div class="holder">${card.holder} ${card.expiry}</div>
+        </div>
+        <div class="card-back">
+          <div class="top">
+            <div class="network">${card.brand}</div>
+          </div>
+          <div class="card-cvc">${card.cvc}</div>
+          <div class="card-number-back">${card.fullNumber.replace(/\d(?=\d{4})/g, '*')}</div>
+        </div>
+      `;
+      
+      cardElement.addEventListener('click', (e) => {
+        if (e.target.closest('.quick-amount') || e.target.closest('.pay-btn')) return;
+        
+        if (cardElement.classList.contains('flipped')) {
+          cardElement.classList.remove('flipped');
+          triggerVibration([30]);
+        } else {
+          cardElement.classList.add('flipped');
+          triggerVibration([50, 30]);
+          
+          setTimeout(() => {
+            if (cardElement.classList.contains('flipped')) {
+              cardElement.classList.remove('flipped');
+            }
+          }, 5000);
+        }
+      });
+      
+      container.appendChild(cardElement);
+      carousel.appendChild(container);
+      
+      setTimeout(() => {
+        container.classList.add('visible');
+      }, 50);
+    });
+    
+    scrollToCard(selectedCard);
+  }
+
+  // Скролл к выбранной карте
+  function scrollToCard(index) {
+    const card = carousel.children[index];
+    if (card) {
+      card.scrollIntoView({ behavior: 'smooth', inline: 'center' });
+    }
   }
 
   // Форматирование номера карты
@@ -1527,8 +1729,9 @@
       }
     ];
 
-    updateAmounts();
+    renderCarousel();
     initPaymentEventListeners();
+    updateAmounts();
   }
 
   // Инициализация обработчиков событий для страницы пополнения
@@ -1659,6 +1862,9 @@
       // Сохраняем в localStorage
       localStorage.setItem('userCards', JSON.stringify(cards));
       
+      // Обновляем карусель
+      renderCarousel();
+      
       // Закрываем модальное окно
       hideAddCardModal();
       triggerVibration();
@@ -1675,6 +1881,7 @@
         cards.splice(cardIndex, 1);
         localStorage.setItem('userCards', JSON.stringify(cards));
         alert('Карта удалена');
+        renderCarousel();
         hideAddCardModal();
         triggerVibration([50, 30, 50]);
       } else {
@@ -1697,6 +1904,54 @@
         if (document.getElementById('add-card-modal').style.display === 'flex') {
           hideAddCardModal();
         }
+      }
+    });
+
+    // Кнопки навигации по картам
+    document.getElementById('prevBtn').onclick = () => {
+      selectedCard = Math.max(0, selectedCard - 1);
+      scrollToCard(selectedCard);
+      triggerVibration([20]);
+    };
+
+    document.getElementById('nextBtn').onclick = () => {
+      selectedCard = Math.min(cards.length - 1, selectedCard + 1);
+      scrollToCard(selectedCard);
+      triggerVibration([20]);
+    };
+
+    document.getElementById('enterDataBtn').onclick = () => {
+      showAddCardModal();
+    };
+
+    // Голосовой ввод суммы
+    document.getElementById('voiceInputBtn').addEventListener('click', () => {
+      if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+        const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+        recognition.lang = 'ru-RU';
+        recognition.interimResults = false;
+        recognition.maxAlternatives = 1;
+        
+        recognition.onresult = (e) => {
+          const transcript = e.results[0][0].transcript;
+          const amount = parseFloat(transcript.replace(',', '.').replace(/[^\d.]/g, ''));
+          if (!isNaN(amount)) {
+            document.getElementById('amount-input').value = amount.toFixed(2);
+            updateAmounts();
+            triggerVibration([50, 30]);
+          } else {
+            alert('Не удалось распознать сумму');
+          }
+        };
+        
+        recognition.onerror = (e) => {
+          alert('Ошибка распознавания: ' + e.error);
+        };
+        
+        recognition.start();
+        triggerVibration([30]);
+      } else {
+        alert('Голосовой ввод не поддерживается вашим браузером');
       }
     });
   }
