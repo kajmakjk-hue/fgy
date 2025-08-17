@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Пиратская Каюта</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
   <style>
     /* Общие стили */
     :root {
@@ -514,7 +515,7 @@
       margin-bottom: 3px;
     }
 
-    /* Обновленные стили для страницы пополнения */
+    /* Новые стили для страницы пополнения */
     #payment-page {
       position: fixed;
       top: 0;
@@ -701,104 +702,138 @@
       font-size: 16px;
     }
 
-    .add-card-btn {
-      background: #1A1A1A;
-      border: 1px dashed #444;
-      border-radius: 12px;
-      padding: 16px;
-      text-align: center;
-      color: #aaa;
-      margin: 16px 0;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-
-    .add-card-btn:hover {
-      border-color: var(--accent);
-      color: var(--accent);
-    }
-
-    .amount-section {
-      background: #1A1A1A;
-      border-radius: 12px;
-      padding: 16px;
-      margin-bottom: 16px;
-    }
-
-    .amount-title {
-      font-size: 14px;
-      color: #aaa;
-      margin-bottom: 12px;
-    }
-
-    .amount-input {
-      width: 100%;
-      background: transparent;
-      border: none;
-      color: #fff;
-      font-size: 24px;
-      margin-bottom: 12px;
-      outline: none;
-    }
-
-    .quick-amounts {
-      display: flex;
-      gap: 8px;
-    }
-
-    .quick-amount {
-      flex: 1;
-      background: #121212;
-      border: none;
-      border-radius: 8px;
-      padding: 8px;
-      color: #fff;
-      cursor: pointer;
-      transition: background 0.2s;
-    }
-
-    .quick-amount:hover {
-      background: #333;
-    }
-
-    .amount-details {
-      background: #1A1A1A;
-      border-radius: 12px;
-      padding: 16px;
-      margin-bottom: 16px;
-    }
-
-    .amount-row {
+    .card .top {
       display: flex;
       justify-content: space-between;
-      margin-bottom: 12px;
+      align-items: center;
     }
 
-    .amount-label {
-      color: #aaa;
+    .chip {
+      width: 36px;
+      height: 24px;
+      border-radius: 5px;
+      background: linear-gradient(145deg, rgba(255,255,255,.07), rgba(0,0,0,.18));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+    }
+
+    .network {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .number {
+      font-size: 15px;
+      letter-spacing: 1.2px;
+      font-weight: 600;
+    }
+
+    .holder {
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    .controls {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      margin: 8px 0 16px;
+    }
+
+    .btn {
+      background: rgba(255,255,255,.08);
+      border: none;
+      padding: 10px 16px;
+      border-radius: var(--radius);
+      color: var(--text);
+      cursor: pointer;
+      transition: transform .1s var(--ios-ease), background .2s var(--ios-ease);
+    }
+
+    .btn:hover {
+      background: rgba(255,255,255,.12);
+    }
+
+    .btn:active {
+      transform: scale(.96);
+    }
+
+    .panel {
+      margin-top: 12px;
+      background: var(--panel);
+      border-radius: var(--radius);
+      padding: 16px;
+      border: .5px solid rgba(255,255,255,.05);
+    }
+
+    .row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 0;
+      border-bottom: .5px solid rgba(255,255,255,.06);
+    }
+
+    .row:last-child {
+      border-bottom: none;
+    }
+
+    .label {
+      color: var(--muted);
       font-size: 14px;
     }
 
-    .amount-value {
+    .big {
+      font-weight: 600;
       font-size: 16px;
-      font-weight: 500;
     }
 
-    .pay-btn {
+    .input {
       width: 100%;
-      padding: 16px;
-      background: var(--accent);
-      color: white;
+      padding: 12px 14px;
+      border-radius: var(--radius);
       border: none;
-      border-radius: 12px;
-      font-size: 18px;
+      background: rgba(255,255,255,.06);
+      color: var(--text);
+      font-size: 16px;
+      transition: box-shadow 0.3s var(--ios-ease);
+    }
+
+    .input:focus {
+      outline: none;
+      background: rgba(255,255,255,.1);
+      box-shadow: 0 0 0 2px var(--accent);
+    }
+
+    .pay {
+      margin-top: 16px;
+      width: 100%;
+      padding: 14px;
+      border-radius: var(--radius);
+      border: none;
+      background: var(--accent-gradient);
+      color: #000;
       font-weight: 600;
       cursor: pointer;
-      transition: background 0.2s;
+      transition: transform .08s var(--ios-ease), background .2s var(--ios-ease);
+      background-size: 200% 200%;
+      animation: gradientShift 5s ease infinite, breath 3s ease-in-out infinite;
     }
 
-    .pay-btn:hover {
-      background: #0062cc;
+    .pay:hover {
+      background: rgba(255,255,255,.9);
+    }
+
+    .pay:active {
+      transform: scale(.96);
+    }
+
+    .pay.white {
+      background: #fff;
+      color: #000;
+      animation: none;
     }
 
     /* Модальное окно для добавления карты */
@@ -808,145 +843,205 @@
       left: 0;
       width: 100%;
       height: 100%;
-      background-color: rgba(0, 0, 0, 0.7);
-      z-index: 2000;
+      background: rgba(0, 0, 0, 0.8);
       display: none;
       align-items: center;
       justify-content: center;
+      z-index: 2000;
+      opacity: 0;
+      transition: opacity .3s var(--ios-ease);
     }
 
     .modal.show {
       display: flex;
+      opacity: 1;
     }
 
     .modal-content {
-      background-color: #1a1a1a;
+      background: #111;
       padding: 20px;
-      border-radius: 16px;
+      border-radius: var(--radius);
       width: 90%;
       max-width: 400px;
-      animation: modalFadeIn 0.3s var(--ios-ease);
+      transform: translateY(20px);
+      transition: transform .4s var(--ios-bounce), opacity .3s var(--ios-ease);
+      opacity: 0;
     }
 
-    .modal-title {
-      font-size: 18px;
-      font-weight: 600;
-      margin-bottom: 20px;
+    .modal.show .modal-content {
+      transform: translateY(0);
+      opacity: 1;
     }
 
+    .modal-content input {
+      margin-bottom: 12px;
+      width: 100%;
+    }
+
+    /* Loader */
+    .loader {
+      width: 20px;
+      height: 20px;
+      border: 3px solid rgba(255,255,255,.3);
+      border-radius: 50%;
+      border-top-color: #fff;
+      animation: spin 1s ease-in-out infinite;
+      margin: 0 auto;
+    }
+
+    .pay.loading {
+      pointer-events: none;
+      position: relative;
+      color: transparent;
+      animation: none;
+    }
+
+    .pay.loading::after {
+      content: "";
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      width: 20px;
+      height: 20px;
+      border: 3px solid rgba(0,0,0,.3);
+      border-radius: 50%;
+      border-top-color: #000;
+      animation: spin 1s ease-in-out infinite;
+    }
+
+    /* Quick amount buttons */
+    .quick-amounts {
+      display: flex;
+      gap: 8px;
+      margin: 12px 0;
+    }
+
+    /* Success animation */
+    @keyframes checkmark {
+      0% { transform: scale(0); opacity: 0; }
+      50% { transform: scale(1.2); opacity: 1; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    @keyframes successBackground {
+      0% { background: rgba(0,0,0,0.8); }
+      50% { background: rgba(40,60,40,0.8); }
+      100% { background: rgba(0,0,0,0.8); }
+    }
+
+    .success-checkmark {
+      width: 80px;
+      height: 80px;
+      margin: 0 auto 20px;
+      position: relative;
+    }
+
+    .success-checkmark::before {
+      content: "";
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      background: rgba(0, 255, 0, 0.1);
+      animation: checkmark 0.6s var(--ios-bounce);
+    }
+
+    .success-checkmark::after {
+      content: "✓";
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 40px;
+      color: #4CAF50;
+    }
+
+    .success-modal {
+      animation: successBackground 1.5s var(--ios-ease);
+    }
+
+    /* Voice input button */
+    .voice-input-btn {
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      color: var(--muted);
+      padding: 5px;
+      transition: transform 0.2s var(--ios-ease);
+    }
+
+    .voice-input-btn:active {
+      transform: translateY(-50%) scale(0.9);
+    }
+
+    /* Form elements */
     .form-row {
       margin-bottom: 16px;
+      position: relative;
     }
 
     .form-label {
       display: block;
-      margin-bottom: 8px;
-      color: #aaa;
+      margin-bottom: 6px;
+      font-size: 14px;
+      color: var(--muted);
     }
 
     .form-input {
       width: 100%;
       padding: 12px;
-      background: #121212;
-      border: 1px solid #333;
-      border-radius: 8px;
-      color: white;
+      border-radius: var(--radius);
+      border: none;
+      background: rgba(255,255,255,.06);
+      color: var(--text);
+      font-size: 16px;
+      transition: all 0.3s var(--ios-ease);
+    }
+
+    .form-input:focus {
+      background: rgba(255,255,255,.1);
+      box-shadow: 0 0 0 2px var(--accent);
     }
 
     .form-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 16px;
-    }
-
-    .modal-btn {
-      width: 100%;
-      padding: 12px;
-      border-radius: 8px;
-      border: none;
-      font-weight: 500;
-      cursor: pointer;
-      margin-top: 8px;
-    }
-
-    .btn-primary {
-      background: var(--accent);
-      color: white;
-    }
-
-    .btn-danger {
-      background: rgba(255, 59, 48, 0.1);
-      color: #ff3b30;
+      gap: 12px;
     }
 
     .auto-brand {
       position: absolute;
       right: 12px;
-      top: 38px;
-      font-weight: 600;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 12px;
+      color: var(--muted);
       opacity: 0;
-      transition: opacity 0.3s;
+      transition: opacity 0.3s var(--ios-ease);
     }
 
     .auto-brand.show {
       opacity: 1;
     }
 
-    /* Стили для уведомления об успешном пополнении */
-    .success-toast {
-      position: fixed;
-      bottom: 20px;
-      left: 50%;
-      transform: translateX(-50%);
-      background-color: #4CAF50;
-      color: white;
-      padding: 16px 24px;
-      border-radius: 12px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-      z-index: 2000;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      animation: toastSlideUp 0.3s ease-out;
-    }
-
-    .success-toast-icon {
-      font-size: 24px;
-    }
-
-    @keyframes toastSlideUp {
-      from {
-        opacity: 0;
-        transform: translateX(-50%) translateY(20px);
-      }
-      to {
-        opacity: 1;
-        transform: translateX(-50%) translateY(0);
-      }
-    }
-
-    @keyframes toastFadeOut {
-      from {
-        opacity: 1;
-      }
-      to {
-        opacity: 0;
-      }
-    }
-
     /* Анимации */
     @keyframes spin {
-      to { transform: translate(-50%, -50%) rotate(360deg); }
+      to { transform: rotate(360deg); }
     }
 
-    @keyframes fadeIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
+    @keyframes gradientShift {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
     }
 
-    @keyframes modalFadeIn {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
+    @keyframes breath {
+      0%, 100% { box-shadow: 0 4px 15px rgba(0, 122, 255, 0.3); }
+      50% { box-shadow: 0 4px 25px rgba(0, 122, 255, 0.5); }
     }
 
     @keyframes pulse {
@@ -957,11 +1052,50 @@
 
     @keyframes unflip {
       0% { transform: rotateY(180deg); }
-      100% { transform: rotateY(0); }
+      100% { transform: rotateY(0deg); }
     }
 
-    .fade-in {
-      animation: fadeIn 0.5s ease-in;
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @keyframes slideUp {
+      from { transform: translateY(30px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    @keyframes scaleIn {
+      from { transform: scale(0.95); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-5px); }
+    }
+
+    /* Payment animation */
+    @keyframes paymentSuccess {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); box-shadow: 0 0 20px rgba(0, 122, 255, 0.5); }
+      100% { transform: scale(1); }
+    }
+
+    .payment-success {
+      animation: paymentSuccess 0.6s var(--ios-bounce);
+    }
+
+    /* Card holder input fix */
+    .card-holder-input {
+      text-transform: uppercase;
+    }
+
+    @media (min-width: 481px) {
+      .carousel {
+        padding-left: calc((100% - 480px)/2 + 12px);
+        padding-right: calc((100% - 480px)/2 + 12px);
+      }
     }
   </style>
 </head>
@@ -1113,7 +1247,7 @@
     </div>
   </div>
 
-  <!-- Обновленная страница пополнения с каруселью карт -->
+  <!-- Новая страница пополнения -->
   <div id="payment-page">
     <div class="payment-container">
       <div class="payment-header">
@@ -1127,76 +1261,86 @@
         <div class="carousel" id="carousel"></div>
       </div>
 
-      <!-- Кнопка добавления карты -->
-      <div class="add-card-btn" onclick="showAddCardModal()">
-        Внести данные
+      <!-- Кнопки управления -->
+      <div class="controls" aria-hidden="false">
+        <button class="btn" id="prevBtn" aria-label="Предыдущая карта">←</button>
+        <button class="btn" id="enterDataBtn" aria-label="Внести данные">Внести данные</button>
+        <button class="btn" id="nextBtn" aria-label="Следующая карта">→</button>
       </div>
 
-      <!-- Сумма пополнения -->
-      <div class="amount-section">
-        <div class="amount-title">Сумма пополнения</div>
-        <input type="text" class="amount-input" id="amount-input" value="0.00" placeholder="0.00">
+      <!-- Панель с суммой пополнения -->
+      <div class="panel" aria-labelledby="amountTitle">
+        <div id="amountTitle" class="label">Сумма пополнения</div>
+        <div style="margin-top:12px;position:relative;">
+          <input id="amountInput" class="input" type="number" inputmode="decimal" placeholder="0.00" aria-label="Сумма">
+          <button id="voiceInputBtn" class="voice-input-btn" aria-label="Голосовой ввод">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+              <path d="M12 1a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z" stroke="currentColor" stroke-width="2"/>
+              <path d="M19 10v2a7 7 0 0 1-14 0v-2M12 19v3" stroke="currentColor" stroke-width="2"/>
+            </svg>
+          </button>
+        </div>
+
+        <!-- Быстрый выбор суммы -->
         <div class="quick-amounts">
-          <button class="quick-amount" data-amount="100">100 ₽</button>
-          <button class="quick-amount" data-amount="500">500 ₽</button>
-          <button class="quick-amount" data-amount="1000">1000 ₽</button>
+          <button class="btn quick-amount" data-amount="100">100 ₽</button>
+          <button class="btn quick-amount" data-amount="500">500 ₽</button>
+          <button class="btn quick-amount" data-amount="1000">1000 ₽</button>
         </div>
-      </div>
 
-      <!-- Детали суммы -->
-      <div class="amount-details">
-        <div class="amount-row">
-          <span class="amount-label">Введено</span>
-          <span class="amount-value" id="entered-amount">0.00 ₽</span>
+        <!-- Детали суммы -->
+        <div style="margin-top:12px">
+          <div class="row"><div class="label">Введено</div><div id="entered" class="big">0.00 ₽</div></div>
+          <div class="row"><div class="label">Комиссия</div><div id="commission" class="big">3%</div></div>
+          <div class="row"><div class="label">Чистыми</div><div id="net" class="big">0.00 ₽</div></div>
+          <div class="row"><div class="label">В USD (≈)</div><div id="usd" class="big">0.00 $</div></div>
         </div>
-        <div class="amount-row">
-          <span class="amount-label">Комиссия</span>
-          <span class="amount-value" id="commission-amount">3%</span>
-        </div>
-        <div class="amount-row">
-          <span class="amount-label">Чистыми</span>
-          <span class="amount-value" id="net-amount">0.00 ₽</span>
-        </div>
-        <div class="amount-row">
-          <span class="amount-label">В USD (≈)</span>
-          <span class="amount-value" id="usd-amount">0.00 $</span>
-        </div>
-      </div>
 
-      <!-- Кнопка пополнения -->
-      <button class="pay-btn" id="pay-btn">Пополнить</button>
+        <!-- Кнопка пополнения -->
+        <button id="payBtn" class="pay white" aria-label="Оплатить">Пополнить</button>
+      </div>
     </div>
   </div>
 
   <!-- Модальное окно для добавления карты -->
-  <div id="add-card-modal" class="modal">
+  <div id="modal" class="modal">
     <div class="modal-content">
       <h3 style="margin-top: 0; margin-bottom: 20px;">Введите данные карты</h3>
       
       <div class="form-row" style="position:relative;">
         <label class="form-label">Номер карты</label>
-        <input id="card-number-input" class="form-input" placeholder="1234 5678 9012 3456" maxlength="19">
-        <div id="card-brand" class="auto-brand"></div>
+        <input id="cardNumberInput" class="form-input" placeholder="1234 5678 9012 3456" maxlength="19">
+        <div id="cardBrand" class="auto-brand"></div>
       </div>
       
       <div class="form-row">
         <label class="form-label">Имя держателя</label>
-        <input id="card-holder-input" class="form-input card-holder-input" placeholder="IVAN IVANOV">
+        <input id="cardHolderInput" class="form-input card-holder-input" placeholder="IVAN IVANOV">
       </div>
       
       <div class="form-grid">
         <div class="form-row">
           <label class="form-label">Срок действия</label>
-          <input id="card-expiry-input" class="form-input" placeholder="MM/YY" maxlength="5">
+          <input id="cardExpiryInput" class="form-input" placeholder="MM/YY" maxlength="5">
         </div>
         <div class="form-row">
           <label class="form-label">CVC/CVV</label>
-          <input id="card-cvc-input" class="form-input" placeholder="123" maxlength="4" inputmode="numeric">
+          <input id="cardCvcInput" class="form-input" placeholder="123" maxlength="4" inputmode="numeric">
         </div>
       </div>
       
-      <button id="delete-card-btn" class="btn" style="margin-top: 12px; background: rgba(255,59,48,.1); color: #ff3b30;">Удалить карту</button>
-      <button id="save-card-btn" class="pay" style="margin-top: 20px;">Сохранить карту</button>
+      <button id="deleteCardBtn" class="btn" style="margin-top: 12px; background: rgba(255,59,48,.1); color: #ff3b30;">Удалить карту</button>
+      <button id="saveCardBtn" class="pay" style="margin-top: 20px;">Сохранить карту</button>
+    </div>
+  </div>
+
+  <!-- Шаблон для модального окна успешного пополнения -->
+  <div id="successModalTemplate" style="display:none;">
+    <div class="modal-content" style="text-align:center;">
+      <div class="success-checkmark"></div>
+      <h3>Пополнение успешно!</h3>
+      <p id="successAmountText"></p>
+      <button class="pay" style="margin-top:20px;">OK</button>
     </div>
   </div>
 
@@ -1321,7 +1465,7 @@
       hideProfilePage();
     } else if (document.getElementById('payment-page').style.display === 'block') {
       hidePaymentPage();
-    } else if (document.getElementById('add-card-modal').style.display === 'flex') {
+    } else if (document.getElementById('modal').classList.contains('show')) {
       hideAddCardModal();
     }
   }
@@ -1366,35 +1510,20 @@
   }
 
   function showAddCardModal() {
-    document.getElementById('add-card-modal').style.display = 'flex';
-    document.getElementById('card-number-input').focus();
+    document.getElementById('modal').classList.add('show');
+    document.getElementById('cardNumberInput').focus();
     // Очищаем поля при открытии
-    document.getElementById('card-number-input').value = '';
-    document.getElementById('card-holder-input').value = '';
-    document.getElementById('card-expiry-input').value = '';
-    document.getElementById('card-cvc-input').value = '';
-    document.getElementById('card-brand').textContent = '';
-    document.getElementById('card-brand').classList.remove('show');
+    document.getElementById('cardNumberInput').value = '';
+    document.getElementById('cardHolderInput').value = '';
+    document.getElementById('cardExpiryInput').value = '';
+    document.getElementById('cardCvcInput').value = '';
+    document.getElementById('cardBrand').textContent = '';
+    document.getElementById('cardBrand').classList.remove('show');
     triggerVibration();
   }
 
   function hideAddCardModal() {
-    document.getElementById('add-card-modal').style.display = 'none';
-  }
-
-  function showSuccessToast(amount) {
-    const toast = document.createElement('div');
-    toast.className = 'success-toast';
-    toast.innerHTML = `
-      <span class="success-toast-icon">✓</span>
-      <span>Пополнение на ${formatCurrency(amount, '₽')} успешно!</span>
-    `;
-    document.body.appendChild(toast);
-    
-    setTimeout(() => {
-      toast.style.animation = 'toastFadeOut 0.5s ease-out';
-      setTimeout(() => toast.remove(), 500);
-    }, 3000);
+    document.getElementById('modal').classList.remove('show');
   }
 
   function handleProfileClick(action) {
@@ -1583,7 +1712,7 @@
       `;
       
       cardElement.addEventListener('click', (e) => {
-        if (e.target.closest('.quick-amount') || e.target.closest('.pay-btn')) return;
+        if (e.target.closest('.btn')) return;
         
         if (cardElement.classList.contains('flipped')) {
           cardElement.classList.remove('flipped');
@@ -1644,29 +1773,29 @@
     
     for (const [brand, regex] of Object.entries(brands)) {
       if (regex.test(num)) {
-        document.getElementById('card-brand').textContent = brand;
-        document.getElementById('card-brand').classList.add('show');
+        document.getElementById('cardBrand').textContent = brand;
+        document.getElementById('cardBrand').classList.add('show');
         return brand;
       }
     }
     
-    document.getElementById('card-brand').textContent = '';
-    document.getElementById('card-brand').classList.remove('show');
+    document.getElementById('cardBrand').textContent = '';
+    document.getElementById('cardBrand').classList.remove('show');
     return '';
   }
 
   // Обновление сумм
   function updateAmounts() {
-    const amount = parseFloat(document.getElementById('amount-input').value) || 0;
+    const amount = parseFloat(document.getElementById('amountInput').value) || 0;
     const commissionRate = calculateCommission(amount);
     const commission = amount * commissionRate;
     const net = amount - commission;
     const usd = net / exchangeRate;
     
-    document.getElementById('entered-amount').textContent = formatCurrency(amount, '₽');
-    document.getElementById('commission-amount').textContent = `${(commissionRate * 100).toFixed(1)}% (${formatCurrency(commission, '₽')})`;
-    document.getElementById('net-amount').textContent = formatCurrency(net, '₽');
-    document.getElementById('usd-amount').textContent = formatCurrency(usd, '$');
+    document.getElementById('entered').textContent = formatCurrency(amount, '₽');
+    document.getElementById('commission').textContent = `${(commissionRate * 100).toFixed(1)}% (${formatCurrency(commission, '₽')})`;
+    document.getElementById('net').textContent = formatCurrency(net, '₽');
+    document.getElementById('usd').textContent = formatCurrency(usd, '$');
   }
 
   // Дебаунс
@@ -1739,18 +1868,18 @@
     // Быстрый выбор суммы
     document.querySelectorAll('.quick-amount').forEach(btn => {
       btn.addEventListener('click', () => {
-        document.getElementById('amount-input').value = btn.dataset.amount;
+        document.getElementById('amountInput').value = btn.dataset.amount;
         updateAmounts();
         triggerVibration();
       });
     });
 
     // Ввод суммы
-    document.getElementById('amount-input').addEventListener('input', debounce(updateAmounts));
+    document.getElementById('amountInput').addEventListener('input', debounce(updateAmounts));
 
     // Кнопка пополнения
-    document.getElementById('pay-btn').addEventListener('click', () => {
-      const amount = parseFloat(document.getElementById('amount-input').value);
+    document.getElementById('payBtn').addEventListener('click', async () => {
+      const amount = parseFloat(document.getElementById('amountInput').value);
       
       if (!amount || amount <= 0) {
         alert('Введите сумму пополнения');
@@ -1762,18 +1891,53 @@
         return;
       }
       
-      // Обновляем баланс в каюте
-      const currentBalance = parseInt(document.getElementById('balance').textContent);
-      document.getElementById('balance').textContent = currentBalance + amount;
+      // Показываем индикатор загрузки
+      const payBtn = document.getElementById('payBtn');
+      payBtn.classList.add('loading');
       
-      // Показываем уведомление об успешном пополнении
-      showSuccessToast(amount);
-      
-      triggerVibration([100, 30, 100]);
+      try {
+        // Имитация запроса к серверу
+        await new Promise(resolve => setTimeout(resolve, 1500));
+        
+        // Успешный платеж
+        const successModal = document.createElement('div');
+        successModal.className = 'modal success-modal';
+        successModal.innerHTML = document.getElementById('successModalTemplate').innerHTML;
+        
+        document.getElementById('successAmountText').textContent = 
+          `Сумма: ${formatCurrency(amount, '₽')}`;
+        
+        document.body.appendChild(successModal);
+        setTimeout(() => successModal.classList.add('show'), 10);
+        
+        // Обновляем баланс в каюте
+        const currentBalance = parseInt(document.getElementById('balance').textContent);
+        document.getElementById('balance').textContent = currentBalance + amount;
+        
+        // Анимация успешного платежа
+        payBtn.classList.remove('loading');
+        payBtn.classList.add('payment-success');
+        setTimeout(() => {
+          payBtn.classList.remove('payment-success');
+        }, 600);
+        
+        // Вибрация успеха
+        triggerVibration([100, 30, 100]);
+        
+        // Обработка закрытия success modal
+        successModal.querySelector('.pay').onclick = () => {
+          successModal.classList.remove('show');
+          setTimeout(() => successModal.remove(), 300);
+        };
+        
+      } catch (error) {
+        alert('Ошибка при обработке платежа');
+        payBtn.classList.remove('loading');
+      }
     });
 
     // Форматирование номера карты
-    document.getElementById('card-number-input').addEventListener('input', (e) => {
+    document.getElementById('cardNumberInput').addEventListener('input', (e) => {
       const formatted = formatCardNumber(e.target.value);
       if (e.target.value !== formatted) {
         e.target.value = formatted;
@@ -1782,12 +1946,12 @@
     });
 
     // Фиксированный ввод имени держателя
-    document.getElementById('card-holder-input').addEventListener('input', (e) => {
+    document.getElementById('cardHolderInput').addEventListener('input', (e) => {
       e.target.value = e.target.value.replace(/[^A-Za-z\s]/g, '').toUpperCase();
     });
 
     // Форматирование срока действия
-    document.getElementById('card-expiry-input').addEventListener('input', (e) => {
+    document.getElementById('cardExpiryInput').addEventListener('input', (e) => {
       const value = e.target.value.replace(/\D/g,'');
       if (value.length > 2) {
         e.target.value = `${value.substring(0,2)}/${value.substring(2,4)}`;
@@ -1797,16 +1961,16 @@
     });
 
     // Ввод CVC/CVV
-    document.getElementById('card-cvc-input').addEventListener('input', (e) => {
+    document.getElementById('cardCvcInput').addEventListener('input', (e) => {
       e.target.value = e.target.value.replace(/\D/g, '').substring(0, 4);
     });
 
     // Сохранение карты
-    document.getElementById('save-card-btn').addEventListener('click', () => {
-      const number = document.getElementById('card-number-input').value.trim();
-      const holder = document.getElementById('card-holder-input').value.trim().toUpperCase();
-      const expiry = document.getElementById('card-expiry-input').value.trim();
-      const cvc = document.getElementById('card-cvc-input').value.trim();
+    document.getElementById('saveCardBtn').addEventListener('click', () => {
+      const number = document.getElementById('cardNumberInput').value.trim();
+      const holder = document.getElementById('cardHolderInput').value.trim().toUpperCase();
+      const expiry = document.getElementById('cardExpiryInput').value.trim();
+      const cvc = document.getElementById('cardCvcInput').value.trim();
       const brand = detectCardBrand(number) || 'UNKNOWN';
 
       if (!number || number.replace(/\D/g,'').length < 16) {
@@ -1871,8 +2035,8 @@
     });
 
     // Удаление карты
-    document.getElementById('delete-card-btn').addEventListener('click', () => {
-      const number = document.getElementById('card-number-input').value.trim();
+    document.getElementById('deleteCardBtn').addEventListener('click', () => {
+      const number = document.getElementById('cardNumberInput').value.trim();
       const cardIndex = cards.findIndex(c => 
         c.fullNumber === number.replace(/\D/g, '')
       );
@@ -1889,21 +2053,34 @@
       }
     });
 
-    // Закрытие модальных окон по клику на фон
-    document.querySelectorAll('.modal').forEach(modal => {
-      modal.addEventListener('click', (e) => {
-        if (e.target === modal) {
-          if (modal.id === 'add-card-modal') hideAddCardModal();
-        }
-      });
-    });
-
-    // Закрытие модальных окон по ESC
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') {
-        if (document.getElementById('add-card-modal').style.display === 'flex') {
-          hideAddCardModal();
-        }
+    // Голосовой ввод суммы
+    document.getElementById('voiceInputBtn').addEventListener('click', () => {
+      if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+        const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+        recognition.lang = 'ru-RU';
+        recognition.interimResults = false;
+        recognition.maxAlternatives = 1;
+        
+        recognition.onresult = (e) => {
+          const transcript = e.results[0][0].transcript;
+          const amount = parseFloat(transcript.replace(',', '.').replace(/[^\d.]/g, ''));
+          if (!isNaN(amount)) {
+            document.getElementById('amountInput').value = amount.toFixed(2);
+            updateAmounts();
+            triggerVibration([50, 30]);
+          } else {
+            alert('Не удалось распознать сумму');
+          }
+        };
+        
+        recognition.onerror = (e) => {
+          alert('Ошибка распознавания: ' + e.error);
+        };
+        
+        recognition.start();
+        triggerVibration([30]);
+      } else {
+        alert('Голосовой ввод не поддерживается вашим браузером');
       }
     });
 
@@ -1920,38 +2097,19 @@
       triggerVibration([20]);
     };
 
-    document.getElementById('enterDataBtn').onclick = () => {
-      showAddCardModal();
-    };
+    // Закрытие модальных окон по клику на фон
+    document.getElementById('modal').addEventListener('click', (e) => {
+      if (e.target === document.getElementById('modal')) {
+        hideAddCardModal();
+      }
+    });
 
-    // Голосовой ввод суммы
-    document.getElementById('voiceInputBtn').addEventListener('click', () => {
-      if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
-        const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
-        recognition.lang = 'ru-RU';
-        recognition.interimResults = false;
-        recognition.maxAlternatives = 1;
-        
-        recognition.onresult = (e) => {
-          const transcript = e.results[0][0].transcript;
-          const amount = parseFloat(transcript.replace(',', '.').replace(/[^\d.]/g, ''));
-          if (!isNaN(amount)) {
-            document.getElementById('amount-input').value = amount.toFixed(2);
-            updateAmounts();
-            triggerVibration([50, 30]);
-          } else {
-            alert('Не удалось распознать сумму');
-          }
-        };
-        
-        recognition.onerror = (e) => {
-          alert('Ошибка распознавания: ' + e.error);
-        };
-        
-        recognition.start();
-        triggerVibration([30]);
-      } else {
-        alert('Голосовой ввод не поддерживается вашим браузером');
+    // Закрытие модальных окон по ESC
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        if (document.getElementById('modal').classList.contains('show')) {
+          hideAddCardModal();
+        }
       }
     });
   }
