@@ -1345,6 +1345,14 @@
   </div>
 
 <script>
+// Добавляем в начало скрипта
+  let currentSuccessModal = null;
+  let isProcessingPayment = false;
+  let cards = [];
+  let exchangeRate = 75;
+  let selectedCard = 0;
+
+  
   // Основные функции
   function triggerVibration(pattern = [50]) {
     try {
@@ -1432,8 +1440,18 @@
       console.log("Not in Telegram WebApp, using demo data");
       setupDemoData();
     }
+    // Загрузка сохраненного баланса
+  const savedBalance = localStorage.getItem('userBalance');
+  if (savedBalance) {
+    document.getElementById('balance').textContent = savedBalance;
+  } else {
+    // Установите начальный баланс, если его нет в хранилище
+    document.getElementById('balance').textContent = '0';
+    localStorage.setItem('userBalance', '0');
   }
-
+}
+  }
+  
   function setupDemoData() {
     const username = "Капитан Джек";
     document.getElementById('username').textContent = username;
@@ -1874,11 +1892,13 @@
       });
     });
 
-    // Ввод суммы
+     // Ввод суммы
     document.getElementById('amountInput').addEventListener('input', debounce(updateAmounts));
 
-    // Кнопка пополнения
-    document.getElementById('payBtn').addEventListener('click', async () => {
+    // Новый обработчик кнопки пополнения
+    document.getElementById('payBtn').addEventListener('click', async function() {
+      if (isProcessingPayment) return;
+      
       const amount = parseFloat(document.getElementById('amountInput').value);
       
       if (!amount || amount <= 0) {
@@ -1891,38 +1911,70 @@
         return;
       }
       
-      // Показываем индикатор загрузки
+      isProcessingPayment = true;
       const payBtn = document.getElementById('payBtn');
+      payBtn.disabled = true;
       payBtn.classList.add('loading');
       
       try {
         // Имитация запроса к серверу
         await new Promise(resolve => setTimeout(resolve, 1500));
+
+        const currentBalance = parseInt(localStorage.getItem('userBalance')) || 0;
+        const newBalance = currentBalance + amount;
         
-        // Успешный платеж
-        const successModal = document.createElement('div');
-        successModal.className = 'modal success-modal';
-        successModal.innerHTML = document.getElementById('successModalTemplate').innerHTML;
+        // Обновляем баланс
+        document.getElementById('balance').textContent = newBalance;
+        localStorage.setItem('userBalance', newBalance.toString());
         
-        document.getElementById('successAmountText').textContent = 
-          `Сумма: ${formatCurrency(amount, '₽')}`;
+        // Показываем уведомление
+        showSuccessModal(amount);
         
-        document.body.appendChild(successModal);
-        setTimeout(() => successModal.classList.add('show'), 10);
+        // Сбрасываем введенную сумму
+        document.getElementById('amountInput').value = '';
+        updateAmounts();
         
-        // Обновляем баланс в каюте
-        const currentBalance = parseInt(document.getElementById('balance').textContent);
-        document.getElementById('balance').textContent = currentBalance + amount;
-        
-        // Анимация успешного платежа
+      } catch (error) {
+        alert('Ошибка при обработке платежа: ' + error.message);
+      } finally {
+        isProcessingPayment = false;
+        payBtn.disabled = false;
         payBtn.classList.remove('loading');
-        payBtn.classList.add('payment-success');
-        setTimeout(() => {
-          payBtn.classList.remove('payment-success');
-        }, 600);
+      }
+    });
         
-        // Вибрация успеха
-        triggerVibration([100, 30, 100]);
+        // Добавляем новую функцию для показа успешного пополнения
+  function showSuccessModal(amount) {
+    // Удаляем предыдущее модальное окно, если оно есть
+    if (currentSuccessModal) {
+      currentSuccessModal.remove();
+    }
+    
+    currentSuccessModal = document.createElement('div');
+    currentSuccessModal.className = 'modal success-modal';
+    currentSuccessModal.innerHTML = 
+      <div class="modal-content" style="text-align:center;">
+        <div class="success-checkmark"></div>
+        <h3>Пополнение успешно!</h3>
+        <p>Сумма: ${formatCurrency(amount, '₽')}</p>
+        <button class="pay" style="margin-top:20px;">OK</button>
+      </div>
+    ;
+    
+    document.body.appendChild(currentSuccessModal);
+    setTimeout(() => currentSuccessModal.classList.add('show'), 10);
+    
+    // Обработчик закрытия модалки
+    currentSuccessModal.querySelector('.pay').addEventListener('click', () => {
+      currentSuccessModal.classList.remove('show');
+      setTimeout(() => {
+        currentSuccessModal.remove();
+        currentSuccessModal = null;
+      }, 300);
+    });
+    
+    triggerVibration([100, 30, 100]);
+  }
         
         // Обработка закрытия success modal
         successModal.querySelector('.pay').onclick = () => {
