@@ -1116,7 +1116,7 @@
 
       <div class="cabinet-card">
         <div class="card-header">
-          <div><span id="balance">1100</span> <span class="pirate-currency">P‌</span></div>
+          <div><span id="balance">0</span> <span class="pirate-currency">P‌</span></div>
           <button onclick="showPaymentPage()">Пополнить</button>
         </div>
 
@@ -1345,14 +1345,6 @@
   </div>
 
 <script>
-// Добавляем в начало скрипта
-  let currentSuccessModal = null;
-  let isProcessingPayment = false;
-  let cards = [];
-  let exchangeRate = 75;
-  let selectedCard = 0;
-
-  
   // Основные функции
   function triggerVibration(pattern = [50]) {
     try {
@@ -1440,18 +1432,17 @@
       console.log("Not in Telegram WebApp, using demo data");
       setupDemoData();
     }
+
     // Загрузка сохраненного баланса
-  const savedBalance = localStorage.getItem('userBalance');
-  if (savedBalance) {
-    document.getElementById('balance').textContent = savedBalance;
-  } else {
-    // Установите начальный баланс, если его нет в хранилище
-    document.getElementById('balance').textContent = '0';
-    localStorage.setItem('userBalance', '0');
+    const savedBalance = localStorage.getItem('userBalance');
+    if (savedBalance) {
+      document.getElementById('balance').textContent = savedBalance;
+    } else {
+      localStorage.setItem('userBalance', '0');
+      document.getElementById('balance').textContent = '0';
+    }
   }
-}
-  }
-  
+
   function setupDemoData() {
     const username = "Капитан Джек";
     document.getElementById('username').textContent = username;
@@ -1474,6 +1465,15 @@
     
     document.getElementById('join-date').textContent = new Date().toLocaleDateString('ru-RU');
     document.getElementById('profile-number').textContent = '1234';
+
+    // Загрузка сохраненного баланса
+    const savedBalance = localStorage.getItem('userBalance');
+    if (savedBalance) {
+      document.getElementById('balance').textContent = savedBalance;
+    } else {
+      localStorage.setItem('userBalance', '0');
+      document.getElementById('balance').textContent = '0';
+    }
   }
 
   function handleBackButton() {
@@ -1671,6 +1671,7 @@
   let cards = [];
   let exchangeRate = 75;
   let selectedCard = 0;
+  let currentSuccessModal = null;
 
   // Цвета для разных типов карт
   const cardColors = {
@@ -1760,6 +1761,7 @@
 
   // Скролл к выбранной карте
   function scrollToCard(index) {
+    const carousel = document.getElementById('carousel');
     const card = carousel.children[index];
     if (card) {
       card.scrollIntoView({ behavior: 'smooth', inline: 'center' });
@@ -1883,6 +1885,11 @@
 
   // Инициализация обработчиков событий для страницы пополнения
   function initPaymentEventListeners() {
+    // Удаляем старые обработчики, если они есть
+    const oldPayBtn = document.getElementById('payBtn');
+    const newPayBtn = oldPayBtn.cloneNode(true);
+    oldPayBtn.parentNode.replaceChild(newPayBtn, oldPayBtn);
+
     // Быстрый выбор суммы
     document.querySelectorAll('.quick-amount').forEach(btn => {
       btn.addEventListener('click', () => {
@@ -1892,13 +1899,11 @@
       });
     });
 
-     // Ввод суммы
+    // Ввод суммы
     document.getElementById('amountInput').addEventListener('input', debounce(updateAmounts));
 
-    // Новый обработчик кнопки пополнения
+    // Кнопка пополнения
     document.getElementById('payBtn').addEventListener('click', async function() {
-      if (isProcessingPayment) return;
-      
       const amount = parseFloat(document.getElementById('amountInput').value);
       
       if (!amount || amount <= 0) {
@@ -1911,7 +1916,7 @@
         return;
       }
       
-      isProcessingPayment = true;
+      // Показываем индикатор загрузки
       const payBtn = document.getElementById('payBtn');
       payBtn.disabled = true;
       payBtn.classList.add('loading');
@@ -1919,72 +1924,58 @@
       try {
         // Имитация запроса к серверу
         await new Promise(resolve => setTimeout(resolve, 1500));
-
+        
+        // Удаляем предыдущее модальное окно, если оно есть
+        if (currentSuccessModal) {
+          currentSuccessModal.remove();
+        }
+        
+        // Успешный платеж
+        currentSuccessModal = document.createElement('div');
+        currentSuccessModal.className = 'modal success-modal';
+        currentSuccessModal.innerHTML = document.getElementById('successModalTemplate').innerHTML;
+        
+        document.getElementById('successAmountText').textContent = 
+          `Сумма: ${formatCurrency(amount, '₽')}`;
+        
+        document.body.appendChild(currentSuccessModal);
+        setTimeout(() => currentSuccessModal.classList.add('show'), 10);
+        
+        // Обновляем баланс в каюте
         const currentBalance = parseInt(localStorage.getItem('userBalance')) || 0;
         const newBalance = currentBalance + amount;
-        
-        // Обновляем баланс
         document.getElementById('balance').textContent = newBalance;
+        
+        // Сохраняем баланс в localStorage
         localStorage.setItem('userBalance', newBalance.toString());
         
-        // Показываем уведомление
-        showSuccessModal(amount);
-        
-        // Сбрасываем введенную сумму
-        document.getElementById('amountInput').value = '';
-        updateAmounts();
-        
-      } catch (error) {
-        alert('Ошибка при обработке платежа: ' + error.message);
-      } finally {
-        isProcessingPayment = false;
-        payBtn.disabled = false;
+        // Анимация успешного платежа
         payBtn.classList.remove('loading');
-      }
-    });
+        payBtn.classList.add('payment-success');
+        setTimeout(() => {
+          payBtn.classList.remove('payment-success');
+        }, 600);
         
-        // Добавляем новую функцию для показа успешного пополнения
-  function showSuccessModal(amount) {
-    // Удаляем предыдущее модальное окно, если оно есть
-    if (currentSuccessModal) {
-      currentSuccessModal.remove();
-    }
-    
-    currentSuccessModal = document.createElement('div');
-    currentSuccessModal.className = 'modal success-modal';
-    currentSuccessModal.innerHTML = 
-      <div class="modal-content" style="text-align:center;">
-        <div class="success-checkmark"></div>
-        <h3>Пополнение успешно!</h3>
-        <p>Сумма: ${formatCurrency(amount, '₽')}</p>
-        <button class="pay" style="margin-top:20px;">OK</button>
-      </div>
-    ;
-    
-    document.body.appendChild(currentSuccessModal);
-    setTimeout(() => currentSuccessModal.classList.add('show'), 10);
-    
-    // Обработчик закрытия модалки
-    currentSuccessModal.querySelector('.pay').addEventListener('click', () => {
-      currentSuccessModal.classList.remove('show');
-      setTimeout(() => {
-        currentSuccessModal.remove();
-        currentSuccessModal = null;
-      }, 300);
-    });
-    
-    triggerVibration([100, 30, 100]);
-  }
+        // Вибрация успеха
+        triggerVibration([100, 30, 100]);
         
         // Обработка закрытия success modal
-        successModal.querySelector('.pay').onclick = () => {
-          successModal.classList.remove('show');
-          setTimeout(() => successModal.remove(), 300);
+        const okButton = currentSuccessModal.querySelector('.pay');
+        okButton.onclick = () => {
+          currentSuccessModal.classList.remove('show');
+          setTimeout(() => {
+            currentSuccessModal.remove();
+            currentSuccessModal = null;
+          }, 300);
+          payBtn.disabled = false;
+          document.getElementById('amountInput').value = '';
+          updateAmounts();
         };
         
       } catch (error) {
         alert('Ошибка при обработке платежа');
         payBtn.classList.remove('loading');
+        payBtn.disabled = false;
       }
     });
 
@@ -2149,6 +2140,11 @@
       triggerVibration([20]);
     };
 
+    // Кнопка добавления карты
+    document.getElementById('enterDataBtn').onclick = () => {
+      showAddCardModal();
+    };
+
     // Закрытие модальных окон по клику на фон
     document.getElementById('modal').addEventListener('click', (e) => {
       if (e.target === document.getElementById('modal')) {
@@ -2173,4 +2169,4 @@
   });
 </script>
 </body>
-</html>v
+</html>
