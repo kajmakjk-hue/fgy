@@ -1,0 +1,2064 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Пиратская Каюта</title>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <style>
+    /* Общие стили */
+    :root {
+      --bg: #000;
+      --panel: #0f1113;
+      --muted: #8e8e93;
+      --text: #fff;
+      --accent: #007aff;
+      --accent-gradient: linear-gradient(45deg, #007aff, #00a8ff);
+      --radius: 14px;
+      --card-radius: 16px;
+      --shadow-strong: 0 28px 60px rgba(0,0,0,.7);
+      --ios-ease: cubic-bezier(.25,.1,.25,1);
+      --ios-bounce: cubic-bezier(.2,.8,.2,1);
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      height: 100vh;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    /* Стили для каюты */
+    .cabinet-page {
+      padding-bottom: 90px;
+      max-width: 500px;
+      margin: 0 auto;
+      display: block;
+    }
+
+    .cabinet-container {
+      padding: 0 16px;
+      box-sizing: border-box;
+    }
+
+    .avatar-section {
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    .avatar {
+      width: 140px;
+      height: 140px;
+      border-radius: 50%;
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      margin: auto;
+      border: 3px solid #2E2E2E;
+      cursor: pointer;
+      transition: transform 0.3s;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .avatar:hover {
+      transform: scale(1.05);
+    }
+
+    .level-username-wrapper {
+      position: relative;
+      width: 100%;
+      max-width: 400px;
+      height: 48px;
+      margin: 12px auto 0 auto;
+      user-select: none;
+    }
+
+    .username {
+      position: absolute;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 20px;
+      font-weight: 600;
+      color: #e0e0e0;
+      white-space: nowrap;
+      z-index: 10;
+      max-width: 80%;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .level-label {
+      position: absolute;
+      top: 0;
+      left: 72%;
+      transform: translateX(-50%);
+      font-size: 12px;
+      font-weight: 600;
+      color: #d4af37;
+      border: 1px solid #d4af37;
+      padding: 2px 8px;
+      border-radius: 6px;
+      background: #1A1A1A;
+      white-space: nowrap;
+      pointer-events: none;
+      text-align: center;
+      line-height: 1.2;
+      height: 20px;
+      box-sizing: border-box;
+      z-index: 20;
+    }
+
+    .cabinet-card {
+      background-color: #1A1A1A;
+      border-radius: 20px;
+      padding: 20px;
+      margin-top: 24px;
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 26px;
+      font-weight: 500;
+      color: #f2f2f2;
+    }
+
+    .card-header button {
+      background-color: #2E2E2E;
+      color: #ffffff;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 10px;
+      font-weight: 500;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .card-header button:hover {
+      background-color: #3E3E3E;
+    }
+
+    .info-grid {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 18px;
+      gap: 12px;
+    }
+
+    .info-box {
+      background-color: #121212;
+      color: #c0c0c0;
+      padding: 12px;
+      border-radius: 12px;
+      font-size: 13px;
+      flex: 1;
+      line-height: 1.4;
+      user-select: none;
+    }
+
+    .info-box.clickable {
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+    }
+
+    .info-box.clickable:hover {
+      background-color: #333333;
+      color: #ffffff;
+    }
+
+    .tariff-title {
+      font-size: 14px;
+      color: #888;
+      margin-top: 20px;
+      margin-bottom: 10px;
+      font-weight: 500;
+    }
+
+    .career-scroll {
+      display: flex;
+      gap: 10px;
+      overflow-x: auto;
+      padding-bottom: 5px;
+    }
+
+    .career-scroll::-webkit-scrollbar {
+      display: none;
+    }
+
+    .career-button {
+      background-color: #121212;
+      color: #e0e0e0;
+      border-radius: 12px;
+      padding: 16px 22px;
+      font-size: 15px;
+      white-space: nowrap;
+      flex-shrink: 0;
+      cursor: pointer;
+      text-align: center;
+      transition: background 0.2s;
+      user-select: none;
+      border: none;
+    }
+
+    .career-button:hover,
+    .career-button:focus {
+      background-color: #333333;
+      color: #ffffff;
+      outline: none;
+    }
+
+    .career-button.active {
+      background-color: #333333;
+      color: #ffffff;
+    }
+
+    .pirate-currency {
+      color: #ffffff;
+      font-weight: bold;
+      font-family: 'Pirata One', cursive;
+      margin-left: 4px;
+      text-shadow: 0 0 4px #ffffff;
+    }
+
+    .button-block {
+      margin-top: 30px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      width: 100%;
+    }
+
+    .button-block button {
+      width: 100%;
+      background: none;
+      border: none;
+      border-bottom: 1.5px solid #444444;
+      padding: 12px 0;
+      font-family: 'Inter', sans-serif;
+      font-weight: 600;
+      font-size: 16px;
+      color: #f2f2f2;
+      cursor: pointer;
+      text-align: left;
+      transition: color 0.2s ease, border-color 0.2s ease;
+    }
+
+    .button-block button:hover,
+    .button-block button:focus {
+      color: #d4af37;
+      border-color: #d4af37;
+      outline: none;
+    }
+
+    .button-block button:active {
+      color: #b38e1e;
+    }
+
+    /* Стили для страницы расходов */
+    .expenses-page {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: #0A0A0A;
+      color: #ffffff;
+      overflow-y: auto;
+      z-index: 1000;
+      padding: 20px;
+      box-sizing: border-box;
+      display: none;
+    }
+
+    .expenses-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .expenses-title {
+      font-size: 24px;
+      font-weight: bold;
+      color: #ffffff;
+    }
+
+    .back-button {
+      background: #333333;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 20px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .back-button:hover {
+      background: #444444;
+    }
+
+    .top-boxes {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      margin-bottom: 20px;
+    }
+
+    .top-box {
+      background: #1A1A1A;
+      color: #ffffff;
+      padding: 12px;
+      border-radius: 12px;
+      text-align: center;
+      min-width: 120px;
+      border: 1px solid #333333;
+    }
+
+    .month-nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+    }
+
+    .month-title {
+      font-size: 18px;
+      font-weight: bold;
+      color: #ffffff;
+    }
+
+    .calendar {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 5px;
+      margin-bottom: 20px;
+      background: #1A1A1A;
+    }
+
+    .calendar th {
+      text-align: center;
+      padding: 8px;
+      color: #cccccc;
+    }
+
+    .calendar td {
+      text-align: center;
+      padding: 10px;
+      border-radius: 8px;
+      background: #2E2E2E;
+      cursor: pointer;
+      color: #ffffff;
+      border: 1px solid #333333;
+      transition: background 0.2s;
+    }
+
+    .calendar td:hover {
+      background: #3E3E3E;
+    }
+
+    .expense-list {
+      margin-top: 20px;
+    }
+
+    .expense-item {
+      background: #1A1A1A;
+      border-radius: 10px;
+      padding: 12px;
+      margin-bottom: 10px;
+      display: flex;
+      justify-content: space-between;
+      color: #ffffff;
+      border: 1px solid #333333;
+      transition: transform 0.2s;
+    }
+
+    .expense-item:hover {
+      transform: translateY(-2px);
+    }
+
+    /* Стили для страницы управления профилем */
+    #profile-page {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: #1A1A1A;
+      z-index: 1000;
+      overflow-y: auto;
+      box-sizing: border-box;
+      display: none;
+      padding: 20px;
+    }
+
+    .profile-management-container {
+      max-width: 600px;
+      margin: 0 auto;
+      color: #ffffff;
+    }
+
+    .profile-back-btn {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      background: #0A0A0A;
+      color: white;
+      border: 2px solid #1A1A1A;
+      padding: 8px 16px;
+      border-radius: 20px;
+      cursor: pointer;
+      z-index: 1001;
+      font-weight: 600;
+      transition: background 0.3s;
+    }
+
+    .profile-back-btn:hover {
+      background: #1A1A1A;
+    }
+
+    #profile-page h1 {
+      font-size: 22px;
+      margin-bottom: 20px;
+      font-weight: bold;
+      color: #e0e0e0;
+      text-align: center;
+      padding-top: 10px;
+    }
+
+    #profile-page .tabs {
+      display: flex;
+      border-bottom: 1px solid #222;
+      margin-bottom: 25px;
+      justify-content: center;
+    }
+
+    #profile-page .tab {
+      padding: 10px 20px;
+      color: #777;
+      font-weight: 500;
+      cursor: pointer;
+      transition: color 0.2s;
+    }
+
+    #profile-page .tab.active {
+      color: #fff;
+      border-bottom: 2px solid #aaa;
+    }
+
+    #profile-page .section {
+      background-color: #111;
+      padding: 15px 20px;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      box-shadow: 0 0 8px rgba(255, 255, 255, 0.02);
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    #profile-page .section:hover {
+      background-color: #222;
+    }
+
+    #profile-page .profile-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    #profile-page .profile-pic {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 1px solid #555;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    #profile-page .field-block {
+      margin-bottom: 12px;
+      background-color: #1a1a1a;
+      padding: 10px 12px;
+      border-radius: 8px;
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+
+    #profile-page .field-block:hover {
+      background-color: #252525;
+    }
+
+    .profile-name {
+      font-weight: bold;
+      font-size: 18px;
+      margin-bottom: 5px;
+    }
+
+    .profile-label {
+      color: #aaa;
+      font-size: 14px;
+      margin-bottom: 3px;
+    }
+
+    /* Стили для страницы пополнения (обновленные) */
+    #payment-page {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: var(--bg);
+      z-index: 1000;
+      overflow-y: auto;
+      box-sizing: border-box;
+      display: none;
+      padding: 16px;
+    }
+
+    .payment-container {
+      max-width: 480px;
+      margin: 0 auto;
+    }
+
+    .payment-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 0;
+      margin-bottom: 16px;
+    }
+
+    .payment-title {
+      font-size: 18px;
+      font-weight: 600;
+      text-align: center;
+      flex: 1;
+    }
+
+    .back-btn {
+      background: none;
+      border: none;
+      color: white;
+      font-size: 20px;
+      cursor: pointer;
+      padding: 8px;
+    }
+
+    .carousel-wrap {
+      margin: 14px 0 6px;
+      overflow: hidden;
+    }
+
+    .carousel {
+      display: flex;
+      gap: 14px;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      padding: 10px 12px 18px;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: thin;
+      scrollbar-color: var(--accent) transparent;
+    }
+
+    .carousel::-webkit-scrollbar {
+      height: 6px;
+      display: block;
+    }
+
+    .carousel::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    .carousel::-webkit-scrollbar-thumb {
+      background-color: var(--accent);
+      border-radius: 3px;
+    }
+
+    .card-container {
+      perspective: 1000px;
+      flex: 0 0 auto;
+      width: clamp(200px, 75vw, 280px);
+      aspect-ratio: 85.6/53.98;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: transform 0.5s var(--ios-ease), opacity 0.3s var(--ios-ease);
+    }
+
+    .card-container.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .card-container:hover {
+      transform: translateY(-5px);
+    }
+
+    .card {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      border-radius: var(--card-radius);
+      padding: 12px;
+      background: linear-gradient(145deg,#141414,#0a0a0a);
+      border: .5px solid rgba(255,255,255,.08);
+      box-shadow: 0 10px 40px rgba(0,0,0,.55);
+      color: var(--text);
+      user-select: none;
+      backface-visibility: hidden;
+      scroll-snap-align: center;
+      transform-origin: center;
+      transition: transform 0.6s var(--ios-ease), box-shadow 0.3s var(--ios-ease);
+      transform-style: preserve-3d;
+      cursor: pointer;
+    }
+
+    .card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 15px 50px rgba(0,0,0,.65);
+    }
+
+    .card:active {
+      animation: pulse 0.3s var(--ios-ease);
+    }
+
+    .card.flipped {
+      transform: rotateY(180deg);
+    }
+
+    .card.unflipping {
+      animation: unflip 0.6s var(--ios-ease) forwards;
+    }
+
+    .card-front, .card-back {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      backface-visibility: hidden;
+      border-radius: var(--card-radius);
+    }
+
+    .card-back {
+      transform: rotateY(180deg);
+      background: linear-gradient(145deg, #0a0a0a, #141414);
+    }
+
+    .card-back::before {
+      content: "";
+      position: absolute;
+      top: 20px;
+      left: 0;
+      right: 0;
+      height: 40px;
+      background: rgba(0,0,0,.5);
+    }
+
+    .card-cvc {
+      align-self: flex-end;
+      margin-top: auto;
+      padding: 6px 10px;
+      background: white;
+      color: black;
+      border-radius: 4px;
+      font-family: monospace;
+      font-size: 14px;
+    }
+
+    .card-number-back {
+      font-family: monospace;
+      letter-spacing: 1px;
+      font-size: 14px;
+      text-align: center;
+      margin-top: 60px;
+    }
+
+    .card.placeholder {
+      background: #444;
+      color: #ccc;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      font-size: 16px;
+    }
+
+    .amount-input {
+      width: 100%;
+      padding: 16px;
+      font-size: 24px;
+      background: #1a1a1a;
+      border: 1px solid #333;
+      border-radius: 12px;
+      color: white;
+      margin-top: 8px;
+    }
+
+    .quick-amounts {
+      display: flex;
+      gap: 12px;
+      margin: 16px 0;
+    }
+
+    .quick-amount {
+      flex: 1;
+      padding: 12px;
+      background: #1a1a1a;
+      border: 1px solid #333;
+      border-radius: 8px;
+      color: white;
+      cursor: pointer;
+      transition: all 0.2s;
+      border: none;
+    }
+
+    .quick-amount:hover {
+      background: #333;
+    }
+
+    .row {
+      display: flex;
+      justify-content: space-between;
+      margin: 12px 0;
+    }
+
+    .label {
+      color: #aaa;
+    }
+
+    .big {
+      font-size: 18px;
+      font-weight: 500;
+    }
+
+    .pay-btn {
+      width: 100%;
+      padding: 16px;
+      background: var(--accent);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-size: 18px;
+      font-weight: 600;
+      margin-top: 24px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .pay-btn:hover {
+      background: #0062cc;
+    }
+
+    .pay-btn.loading {
+      position: relative;
+      color: transparent;
+    }
+
+    .pay-btn.loading::after {
+      content: "";
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 24px;
+      height: 24px;
+      border: 3px solid rgba(255, 255, 255, 0.3);
+      border-top-color: white;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    .add-card-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      width: 100%;
+      padding: 16px;
+      background: #1a1a1a;
+      border: 1px dashed #444;
+      border-radius: 12px;
+      color: #aaa;
+      margin-top: 16px;
+      cursor: pointer;
+    }
+
+    .add-card-btn:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    /* Модальное окно для добавления карты */
+    .modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.7);
+      z-index: 2000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal.show {
+      display: flex;
+    }
+
+    .modal-content {
+      background-color: #1a1a1a;
+      padding: 20px;
+      border-radius: 16px;
+      width: 90%;
+      max-width: 400px;
+      animation: modalFadeIn 0.3s var(--ios-ease);
+    }
+
+    .modal-title {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 20px;
+    }
+
+    .form-row {
+      margin-bottom: 16px;
+    }
+
+    .form-label {
+      display: block;
+      margin-bottom: 8px;
+      color: #aaa;
+    }
+
+    .form-input {
+      width: 100%;
+      padding: 12px;
+      background: #121212;
+      border: 1px solid #333;
+      border-radius: 8px;
+      color: white;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .modal-btn {
+      width: 100%;
+      padding: 12px;
+      border-radius: 8px;
+      border: none;
+      font-weight: 500;
+      cursor: pointer;
+      margin-top: 8px;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: white;
+    }
+
+    .btn-danger {
+      background: rgba(255, 59, 48, 0.1);
+      color: #ff3b30;
+    }
+
+    .auto-brand {
+      position: absolute;
+      right: 12px;
+      top: 38px;
+      font-weight: 600;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .auto-brand.show {
+      opacity: 1;
+    }
+
+    /* Стили для уведомления об успешном пополнении */
+    .success-toast {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: #4CAF50;
+      color: white;
+      padding: 16px 24px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      z-index: 2000;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      animation: toastSlideUp 0.3s ease-out;
+    }
+
+    .success-toast-icon {
+      font-size: 24px;
+    }
+
+    @keyframes toastSlideUp {
+      from {
+        opacity: 0;
+        transform: translateX(-50%) translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+      }
+    }
+
+    @keyframes toastFadeOut {
+      from {
+        opacity: 1;
+      }
+      to {
+        opacity: 0;
+      }
+    }
+
+    /* Анимации */
+    @keyframes spin {
+      to { transform: translate(-50%, -50%) rotate(360deg); }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @keyframes modalFadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(0.95); }
+      100% { transform: scale(1); }
+    }
+
+    @keyframes unflip {
+      0% { transform: rotateY(180deg); }
+      100% { transform: rotateY(0); }
+    }
+
+    .fade-in {
+      animation: fadeIn 0.5s ease-in;
+    }
+
+    /* Новые стили для страницы пополнения */
+    .controls {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      margin: 8px 0 16px;
+    }
+
+    .btn {
+      background: rgba(255,255,255,.08);
+      border: none;
+      padding: 10px 16px;
+      border-radius: var(--radius);
+      color: var(--text);
+      cursor: pointer;
+      transition: transform .1s var(--ios-ease),background .2s var(--ios-ease);
+    }
+
+    .btn:hover {
+      background: rgba(255,255,255,.12);
+    }
+
+    .btn:active {
+      transform: scale(.96);
+    }
+
+    .panel {
+      margin-top: 12px;
+      background: var(--panel);
+      border-radius: var(--radius);
+      padding: 16px;
+      border: .5px solid rgba(255,255,255,.05);
+    }
+
+    .input {
+      width: 100%;
+      padding: 12px 14px;
+      border-radius: var(--radius);
+      border: none;
+      background: rgba(255,255,255,.06);
+      color: var(--text);
+      font-size: 16px;
+      transition: box-shadow 0.3s var(--ios-ease);
+    }
+
+    .input:focus {
+      outline: none;
+      background: rgba(255,255,255,.1);
+      box-shadow: 0 0 0 2px var(--accent);
+    }
+
+    .pay {
+      margin-top: 16px;
+      width: 100%;
+      padding: 14px;
+      border-radius: var(--radius);
+      border: none;
+      background: var(--accent-gradient);
+      color: #000;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform .08s var(--ios-ease),background .2s var(--ios-ease);
+      background-size: 200% 200%;
+    }
+
+    .pay:hover {
+      background: rgba(255,255,255,.9);
+    }
+
+    .pay:active {
+      transform: scale(.96);
+    }
+
+    .pay.white {
+      background: #fff;
+      color: #000;
+    }
+
+    .voice-input-btn {
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      color: var(--muted);
+      padding: 5px;
+      transition: transform 0.2s var(--ios-ease);
+    }
+
+    .voice-input-btn:active {
+      transform: translateY(-50%) scale(0.9);
+    }
+  </style>
+</head>
+<body>
+  <!-- Страница каюты -->
+  <div id="cabinet-page" class="cabinet-page fade-in">
+    <div class="cabinet-container">
+      <div class="avatar-section">
+        <div class="avatar" id="avatar">
+          <!-- Аватар будет вставлен через JavaScript -->
+        </div>
+
+        <div class="level-username-wrapper">
+          <div class="level-label" id="level-label">Юнга</div>
+          <div class="username" id="username">Загрузка...</div>
+        </div>
+      </div>
+
+      <div class="cabinet-card">
+        <div class="card-header">
+          <div><span id="balance">1100</span> <span class="pirate-currency">P‌</span></div>
+          <button onclick="showPaymentPage()">Пополнить</button>
+        </div>
+
+        <div class="info-grid">
+          <div class="info-box clickable" onclick="showExpensesPage()">
+            Расходы<br>
+            <strong id="expenses-sum">0 <span class="pirate-currency">P</span></strong>
+          </div>
+          <div class="info-box">Подключённые<br>услуги и сервисы ⚙️⚓️</div>
+        </div>
+
+        <div class="tariff-title">Пиратская карьера</div>
+        <div class="career-scroll" id="career-scroll">
+          <button class="career-button active" onclick="changeLevel('Юнга', this)">Юнга</button>
+          <button class="career-button" onclick="changeLevel('Крыса трюма', this)">Крыса трюма</button>
+          <button class="career-button" onclick="changeLevel('Корсар', this)">Корсар</button>
+          <button class="career-button" onclick="changeLevel('Штурман', this)">Штурман</button>
+          <button class="career-button" onclick="changeLevel('Бывалый пёс', this)">Бывалый пёс</button>
+        </div>
+      </div>
+
+      <div class="button-block">
+        <a href="https://t.me/FOLLENSHAIDbot?startapp=0bff92cd6d10d69a" target="_blank" style="text-decoration: none;">
+          <button type="button" onclick="triggerVibration()">Отзывы о Follen & Shaid</button>
+        </a>
+        <a href="https://t.me/FOllENSHAID_bot" target="_blank" style="text-decoration: none;">
+          <button type="button" onclick="triggerVibration()">Связь с поддержкой</button>
+        </a>
+        <button type="button" onclick="showProfilePage()">Управление профилем</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Страница расходов -->
+  <div id="expenses-page" class="expenses-page">
+    <div class="expenses-header">
+      <button class="back-button" onclick="hideExpensesPage()">← Назад</button>
+      <div class="expenses-title">Мои расходы</div>
+      <div style="width: 80px;"></div>
+    </div>
+
+    <div class="top-boxes">
+      <div class="top-box">
+        <div>Всего</div>
+        <div id="total-month">0 ₽</div>
+      </div>
+      <div class="top-box">
+        <div>Сегодня</div>
+        <div id="total-today">0 ₽</div>
+      </div>
+    </div>
+
+    <div class="month-nav">
+      <button onclick="prevMonth()">←</button>
+      <div class="month-title" id="current-month">Август 2025</div>
+      <button onclick="nextMonth()">→</button>
+    </div>
+
+    <table class="calendar">
+      <thead>
+        <tr>
+          <th>Пн</th><th>Вт</th><th>Ср</th><th>Чт</th><th>Пт</th><th>Сб</th><th>Вс</th>
+        </tr>
+      </thead>
+      <tbody id="calendar-body"></tbody>
+    </table>
+
+    <div class="expense-list" id="expense-list">
+      <div class="expense-item">
+        <div>Покупка рома</div>
+        <div>500 P</div>
+      </div>
+      <div class="expense-item">
+        <div>Карта сокровищ</div>
+        <div>1200 P</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Страница управления профилем -->
+  <div id="profile-page">
+    <button class="profile-back-btn" onclick="hideProfilePage()">← Назад</button>
+    
+    <div class="profile-management-container">
+      <h1>Управление профилем</h1>
+
+      <div class="tabs">
+        <div class="tab active">Основные данные</div>
+        <div class="tab">Вид профиля</div>
+      </div>
+
+      <div class="section profile" onclick="handleProfileClick('Профиль')">
+        <div class="profile-row">
+          <div class="profile-details">
+            <div class="profile-name" id="profile-username">Загрузка...</div>
+            <div class="profile-label">Вольный моряк</div>
+            <div class="profile-label">Номер профиля: <span id="profile-number">•••</span></div>
+            <div class="profile-label">На FollenShaid с <span id="join-date">•••</span></div>
+          </div>
+          <div class="profile-pic" id="profile-avatar-img"></div>
+        </div>
+      </div>
+
+      <div class="section confirmation">
+        <div class="section-title">Подтверждение данных</div>
+        <div class="field-block" onclick="handleProfileClick('https://t.me/FOLLENSHAIDbot?startapp=c42bb671a2141229')">
+          <div class="field-label">Для частных лиц</div>
+          <div class="field-value">По документам, личному кабинету в банке или через Госуслуги</div>
+        </div>
+
+        <div class="field-block" onclick="handleProfileClick('https://t.me/FOLLENSHAIDbot?startapp=22f807ee776b6229')">
+          <div class="field-label">Для самозанятых</div>
+          <div class="field-value">По профилю на Госуслугах, T-ID или Сбер ID</div>
+        </div>
+
+        <div class="field-block" onclick="handleProfileClick('Для юридических лиц и ИП')">
+          <div class="field-label">Для юридических лиц и ИП</div>
+          <div class="field-value">По реквизитам или личному кабинету в банке</div>
+        </div>
+      </div>
+
+      <div class="section community" onclick="handleProfileClick('Привязка карты')">
+        <div class="section-title">Привязка банковской карты</div>
+        <div class="field-block" onclick="handleProfileClick('Введи данные')">
+          <div class="field-value">Введи данные</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Страница пополнения (обновленная) -->
+  <div id="payment-page">
+    <div class="payment-container">
+      <div class="payment-header">
+        <button class="back-btn" onclick="hidePaymentPage()">←</button>
+        <div class="payment-title">Пополнение баланса</div>
+        <div style="width:40px;"></div>
+      </div>
+
+      <div class="carousel-wrap">
+        <div class="carousel" id="carousel"></div>
+      </div>
+
+      <div class="controls" aria-hidden="false">
+        <button class="btn" id="prevBtn" aria-label="Предыдущая карта">←</button>
+        <button class="btn" id="enterDataBtn" aria-label="Внести данные">Внести данные</button>
+        <button class="btn" id="nextBtn" aria-label="Следующая карта">→</button>
+      </div>
+
+      <div class="panel" aria-labelledby="amountTitle">
+        <div id="amountTitle" class="label">Сумма пополнения</div>
+        <div style="margin-top:12px;position:relative;">
+          <input id="amount-input" class="input" type="number" inputmode="decimal" placeholder="0.00" aria-label="Сумма">
+          <button id="voiceInputBtn" class="voice-input-btn" aria-label="Голосовой ввод">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+              <path d="M12 1a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z" stroke="currentColor" stroke-width="2"/>
+              <path d="M19 10v2a7 7 0 0 1-14 0v-2M12 19v3" stroke="currentColor" stroke-width="2"/>
+            </svg>
+          </button>
+        </div>
+
+        <div class="quick-amounts">
+          <button class="btn quick-amount" data-amount="100">100 ₽</button>
+          <button class="btn quick-amount" data-amount="500">500 ₽</button>
+          <button class="btn quick-amount" data-amount="1000">1000 ₽</button>
+        </div>
+
+        <div style="margin-top:12px">
+          <div class="row"><div class="label">Введено</div><div id="entered-amount" class="big">0.00 ₽</div></div>
+          <div class="row"><div class="label">Комиссия</div><div id="commission-amount" class="big">3%</div></div>
+          <div class="row"><div class="label">Чистыми</div><div id="net-amount" class="big">0.00 ₽</div></div>
+          <div class="row"><div class="label">В USD (≈)</div><div id="usd-amount" class="big">0.00 $</div></div>
+        </div>
+
+        <button id="pay-btn" class="pay white" aria-label="Оплатить">Пополнить</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Модальное окно для добавления карты -->
+  <div id="add-card-modal" class="modal">
+    <div class="modal-content">
+      <h3 style="margin-top: 0; margin-bottom: 20px;">Введите данные карты</h3>
+      
+      <div class="form-row" style="position:relative;">
+        <label class="form-label">Номер карты</label>
+        <input id="card-number-input" class="form-input" placeholder="1234 5678 9012 3456" maxlength="19">
+        <div id="card-brand" class="auto-brand"></div>
+      </div>
+      
+      <div class="form-row">
+        <label class="form-label">Имя держателя</label>
+        <input id="card-holder-input" class="form-input card-holder-input" placeholder="IVAN IVANOV">
+      </div>
+      
+      <div class="form-grid">
+        <div class="form-row">
+          <label class="form-label">Срок действия</label>
+          <input id="card-expiry-input" class="form-input" placeholder="MM/YY" maxlength="5">
+        </div>
+        <div class="form-row">
+          <label class="form-label">CVC/CVV</label>
+          <input id="card-cvc-input" class="form-input" placeholder="123" maxlength="4" inputmode="numeric">
+        </div>
+      </div>
+      
+      <button id="delete-card-btn" class="btn" style="margin-top: 12px; background: rgba(255,59,48,.1); color: #ff3b30;">Удалить карту</button>
+      <button id="save-card-btn" class="pay" style="margin-top: 20px;">Сохранить карту</button>
+    </div>
+  </div>
+
+<script>
+  // Основные функции
+  function triggerVibration(pattern = [50]) {
+    try {
+      if (window.Telegram?.WebApp?.HapticFeedback?.impactOccurred) {
+        Telegram.WebApp.HapticFeedback.impactOccurred('light');
+      } else if ('vibrate' in navigator) {
+        navigator.vibrate(pattern);
+      } else {
+        console.log("Vibration triggered");
+      }
+    } catch (e) {
+      console.warn('Vibration not supported', e);
+    }
+  }
+
+  // Инициализация данных пользователя Telegram
+  function initUserData() {
+    // Проверяем, что WebApp Telegram доступен
+    if (window.Telegram && Telegram.WebApp) {
+      console.log("Telegram WebApp detected");
+      
+      // Инициализируем WebApp
+      Telegram.WebApp.ready();
+      Telegram.WebApp.expand();
+      
+      // Получаем данные пользователя
+      const user = Telegram.WebApp.initDataUnsafe?.user;
+      
+      if (user) {
+        console.log("User data:", user);
+        
+        // Устанавливаем имя пользователя
+        const username = user.first_name || user.username || 'Пират';
+        document.getElementById('username').textContent = username;
+        document.getElementById('profile-username').textContent = username;
+        
+        // Устанавливаем аватар
+        const avatarUrl = user.photo_url;
+        const avatarElement = document.getElementById('avatar');
+        const profileAvatarElement = document.getElementById('profile-avatar-img');
+        
+        if (avatarUrl) {
+          console.log("Setting avatar from URL:", avatarUrl);
+          avatarElement.style.backgroundImage = `url(${avatarUrl})`;
+          avatarElement.style.backgroundSize = 'cover';
+          profileAvatarElement.style.backgroundImage = `url(${avatarUrl})`;
+          profileAvatarElement.style.backgroundSize = 'cover';
+        } else {
+          // Дефолтный аватар, если фото нет
+          console.log("Using default avatar");
+          const defaultAvatarColor = `hsl(${Math.floor(Math.random() * 360)}, 70%, 50%)`;
+          avatarElement.innerHTML = 
+            `<svg width="140" height="140" viewBox="0 0 140 140" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="70" cy="70" r="70" fill="${defaultAvatarColor}"/>
+              <text x="70" y="80" font-family="Arial" font-size="60" fill="white" text-anchor="middle" dominant-baseline="middle">
+                ${username.charAt(0).toUpperCase()}
+              </text>
+            </svg>`;
+          
+          profileAvatarElement.innerHTML = 
+            `<svg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="30" cy="30" r="30" fill="${defaultAvatarColor}"/>
+              <text x="30" y="35" font-family="Arial" font-size="30" fill="white" text-anchor="middle" dominant-baseline="middle">
+                ${username.charAt(0).toUpperCase()}
+              </text>
+            </svg>`;
+        }
+        
+        // Устанавливаем дату присоединения (примерная)
+        const joinDate = new Date(user.id * 1000);
+        document.getElementById('join-date').textContent = joinDate.toLocaleDateString('ru-RU');
+        
+        // Устанавливаем номер профиля (первые 4 цифры ID)
+        document.getElementById('profile-number').textContent = String(user.id).slice(0, 4);
+        
+        // Настраиваем кнопку "Назад" в Telegram
+        Telegram.WebApp.BackButton.show();
+        Telegram.WebApp.BackButton.onClick(handleBackButton);
+        
+      } else {
+        console.log("No user data available");
+        setupDemoData();
+      }
+    } else {
+      console.log("Not in Telegram WebApp, using demo data");
+      setupDemoData();
+    }
+  }
+
+  function setupDemoData() {
+    const username = "Капитан Джек";
+    document.getElementById('username').textContent = username;
+    document.getElementById('profile-username').textContent = username;
+    
+    const avatarElement = document.getElementById('avatar');
+    const profileAvatarElement = document.getElementById('profile-avatar-img');
+    
+    avatarElement.innerHTML = 
+      `<svg width="140" height="140" viewBox="0 0 140 140" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="70" cy="70" r="70" fill="#2E2E2E"/>
+        <text x="70" y="80" font-family="Arial" font-size="60" fill="white" text-anchor="middle" dominant-baseline="middle">К</text>
+      </svg>`;
+    
+    profileAvatarElement.innerHTML = 
+      `<svg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="30" cy="30" r="30" fill="#2E2E2E"/>
+        <text x="30" y="35" font-family="Arial" font-size="30" fill="white" text-anchor="middle" dominant-baseline="middle">К</text>
+      </svg>`;
+    
+    document.getElementById('join-date').textContent = new Date().toLocaleDateString('ru-RU');
+    document.getElementById('profile-number').textContent = '1234';
+  }
+
+  function handleBackButton() {
+    if (document.getElementById('expenses-page').style.display === 'block') {
+      hideExpensesPage();
+    } else if (document.getElementById('profile-page').style.display === 'block') {
+      hideProfilePage();
+    } else if (document.getElementById('payment-page').style.display === 'block') {
+      hidePaymentPage();
+    } else if (document.getElementById('add-card-modal').style.display === 'flex') {
+      hideAddCardModal();
+    }
+  }
+
+  // Управление страницами
+  function showExpensesPage() {
+    document.getElementById('expenses-page').style.display = 'block';
+    document.getElementById('cabinet-page').style.display = 'none';
+    triggerVibration();
+    initExpensesCalendar();
+  }
+
+  function hideExpensesPage() {
+    document.getElementById('expenses-page').style.display = 'none';
+    document.getElementById('cabinet-page').style.display = 'block';
+    triggerVibration();
+  }
+
+  function showProfilePage() {
+    document.getElementById('profile-page').style.display = 'block';
+    document.getElementById('cabinet-page').style.display = 'none';
+    triggerVibration();
+  }
+
+  function hideProfilePage() {
+    document.getElementById('profile-page').style.display = 'none';
+    document.getElementById('cabinet-page').style.display = 'block';
+    triggerVibration();
+  }
+
+  function showPaymentPage() {
+    document.getElementById('payment-page').style.display = 'block';
+    document.getElementById('cabinet-page').style.display = 'none';
+    triggerVibration();
+    initPaymentPage();
+  }
+
+  function hidePaymentPage() {
+    document.getElementById('payment-page').style.display = 'none';
+    document.getElementById('cabinet-page').style.display = 'block';
+    triggerVibration();
+  }
+
+  function showAddCardModal() {
+    document.getElementById('add-card-modal').style.display = 'flex';
+    document.getElementById('card-number-input').focus();
+    // Очищаем поля при открытии
+    document.getElementById('card-number-input').value = '';
+    document.getElementById('card-holder-input').value = '';
+    document.getElementById('card-expiry-input').value = '';
+    document.getElementById('card-cvc-input').value = '';
+    document.getElementById('card-brand').textContent = '';
+    document.getElementById('card-brand').classList.remove('show');
+    triggerVibration();
+  }
+
+  function hideAddCardModal() {
+    document.getElementById('add-card-modal').style.display = 'none';
+  }
+
+  function showSuccessToast(amount) {
+    const toast = document.createElement('div');
+    toast.className = 'success-toast';
+    toast.innerHTML = `
+      <span class="success-toast-icon">✓</span>
+      <span>Пополнение на ${formatCurrency(amount, '₽')} успешно!</span>
+    `;
+    document.body.appendChild(toast);
+    
+    setTimeout(() => {
+      toast.style.animation = 'toastFadeOut 0.5s ease-out';
+      setTimeout(() => toast.remove(), 500);
+    }, 3000);
+  }
+
+  function handleProfileClick(action) {
+    triggerVibration();
+    if (typeof action === 'string' && action.startsWith('http')) {
+      if (window.Telegram?.WebApp?.openLink) {
+        Telegram.WebApp.openLink(action);
+      } else {
+        window.open(action, '_blank');
+      }
+    } else {
+      console.log("Action:", action);
+    }
+  }
+
+  // Логика пиратской карьеры
+  const careerDescriptions = {
+    "Юнга": "Ты только что прибыл на корабль! Начало пиратского пути.",
+    "Крыса трюма": "Ты уже освоился на судне, но пока прячешься в трюме.",
+    "Корсар": "Ты стал настоящим пиратом и уже участвуешь в абордаже.",
+    "Штурман": "Ты прокладываешь курс команды и ведёшь корабль вперёд.",
+    "Бывалый пёс": "Ты повидал штормы, битвы и сокровища. Опытный ветеран!"
+  };
+
+  function changeLevel(level, buttonElement) {
+    const levelLabel = document.getElementById('level-label');
+    levelLabel.textContent = level;
+
+    const buttons = document.querySelectorAll('.career-button');
+    buttons.forEach(btn => btn.classList.remove('active'));
+    buttonElement.classList.add('active');
+
+    // Показываем попап с описанием уровня
+    showCareerPopup(level);
+    triggerVibration();
+  }
+
+  function showCareerPopup(level) {
+    const title = level;
+    const text = careerDescriptions[level] || 'Информация отсутствует';
+    
+    if (window.Telegram?.WebApp?.showPopup) {
+      Telegram.WebApp.showPopup({
+        title: title,
+        message: text,
+        buttons: [{ type: 'ok' }]
+      });
+    } else {
+      alert(`${title}\n\n${text}`);
+    }
+  }
+
+  // Логика календаря расходов
+  let currentDate = new Date();
+  
+  function initExpensesCalendar() {
+    updateCalendar();
+    // Здесь можно добавить загрузку данных о расходах
+  }
+  
+  function updateCalendar() {
+    const year = currentDate.getFullYear();
+    const month = currentDate.getMonth();
+    
+    document.getElementById('current-month').textContent = 
+      new Date(year, month).toLocaleDateString('ru-RU', { 
+        month: 'long', 
+        year: 'numeric' 
+      });
+    
+    const firstDay = new Date(year, month, 1);
+    const lastDay = new Date(year, month + 1, 0);
+    
+    const calendarBody = document.getElementById('calendar-body');
+    calendarBody.innerHTML = '';
+    
+    let date = 1;
+    for (let i = 0; i < 6; i++) {
+      if (date > lastDay.getDate()) break;
+      
+      const row = document.createElement('tr');
+      
+      for (let j = 0; j < 7; j++) {
+        const cell = document.createElement('td');
+        
+        if (i === 0 && j < firstDay.getDay()) {
+          // Пустые ячейки перед первым днем месяца
+          cell.textContent = '';
+        } else if (date > lastDay.getDate()) {
+          // Пустые ячейки после последнего дня месяца
+          cell.textContent = '';
+        } else {
+          cell.textContent = date;
+          
+          // Подсветка текущего дня
+          const today = new Date();
+          if (date === today.getDate() && 
+              month === today.getMonth() && 
+              year === today.getFullYear()) {
+            cell.style.border = '1px solid #d4af37';
+            cell.style.boxShadow = '0 0 5px #d4af37';
+          }
+          
+          date++;
+        }
+        
+        row.appendChild(cell);
+      }
+      
+      calendarBody.appendChild(row);
+    }
+  }
+  
+  function prevMonth() {
+    currentDate.setMonth(currentDate.getMonth() - 1);
+    updateCalendar();
+    triggerVibration();
+  }
+  
+  function nextMonth() {
+    currentDate.setMonth(currentDate.getMonth() + 1);
+    updateCalendar();
+    triggerVibration();
+  }
+
+  // Логика страницы пополнения
+  let cards = [];
+  let exchangeRate = 75;
+  let selectedCard = 0;
+
+  // Цвета для разных типов карт
+  const cardColors = {
+    'VISA': ['#1a1a2e', '#16213e'],
+    'MC': ['#191919', '#3a3a3a'],
+    'AMEX': ['#006fcf', '#003f7f'],
+    'MIR': ['#1a3e8c', '#0d2b6b']
+  };
+
+  // Форматирование валюты
+  function formatCurrency(amount, currency) {
+    return new Intl.NumberFormat('ru-RU', {
+      style: 'currency',
+      currency: currency === '$' ? 'USD' : 'RUB',
+      currencyDisplay: 'symbol'
+    }).format(amount).replace(/\s/g, ' ');
+  }
+
+  // Динамическая комиссия
+  function calculateCommission(amount) {
+    if (amount <= 1000) return 0.03; // 3%
+    if (amount <= 5000) return 0.025; // 2.5%
+    return 0.02; // 2%
+  }
+
+  // Рендер карусели карт
+  function renderCarousel() {
+    const carousel = document.getElementById('carousel');
+    carousel.innerHTML = '';
+    
+    cards.forEach((card, index) => {
+      const container = document.createElement('div');
+      container.className = 'card-container';
+      container.style.transitionDelay = `${index * 0.1}s`;
+      
+      const cardElement = document.createElement('div');
+      cardElement.className = 'card';
+      cardElement.dataset.index = index;
+      cardElement.dataset.id = card.id;
+      
+      cardElement.innerHTML = `
+        <div class="card-front" style="background: linear-gradient(145deg, ${cardColors[card.brand]?.[0] || '#141414'}, ${cardColors[card.brand]?.[1] || '#0a0a0a'});">
+          <div class="top">
+            <div class="chip">💳</div>
+            <div class="network">${card.brand}</div>
+          </div>
+          <div class="number">${card.number}</div>
+          <div class="holder">${card.holder} ${card.expiry}</div>
+        </div>
+        <div class="card-back">
+          <div class="top">
+            <div class="network">${card.brand}</div>
+          </div>
+          <div class="card-cvc">${card.cvc}</div>
+          <div class="card-number-back">${card.fullNumber.replace(/\d(?=\d{4})/g, '*')}</div>
+        </div>
+      `;
+      
+      cardElement.addEventListener('click', (e) => {
+        if (e.target.closest('.quick-amount') || e.target.closest('.pay-btn')) return;
+        
+        if (cardElement.classList.contains('flipped')) {
+          cardElement.classList.remove('flipped');
+          triggerVibration([30]);
+        } else {
+          cardElement.classList.add('flipped');
+          triggerVibration([50, 30]);
+          
+          setTimeout(() => {
+            if (cardElement.classList.contains('flipped')) {
+              cardElement.classList.remove('flipped');
+            }
+          }, 5000);
+        }
+      });
+      
+      container.appendChild(cardElement);
+      carousel.appendChild(container);
+      
+      setTimeout(() => {
+        container.classList.add('visible');
+      }, 50);
+    });
+    
+    scrollToCard(selectedCard);
+  }
+
+  // Скролл к выбранной карте
+  function scrollToCard(index) {
+    const card = carousel.children[index];
+    if (card) {
+      card.scrollIntoView({ behavior: 'smooth', inline: 'center' });
+    }
+  }
+
+  // Форматирование номера карты
+  function formatCardNumber(value) {
+    const v = value.replace(/\D/g,'').substring(0,16);
+    const parts = [];
+    for (let i = 0; i < v.length; i += 4) {
+      parts.push(v.substring(i, i + 4));
+    }
+    return parts.join(' ').trim();
+  }
+
+  // Автоматическое определение бренда карты
+  function detectCardBrand(number) {
+    const num = number.replace(/\D/g,'');
+    const brands = {
+      'VISA': /^4/,
+      'MASTERCARD': /^5[1-5]/,
+      'AMEX': /^3[47]/,
+      'MIR': /^2/,
+      'JCB': /^(2131|1800|35)/,
+      'DINERS': /^(36|38|30[0-5])/,
+      'DISCOVER': /^(6011|65|64[4-9])/
+    };
+    
+    for (const [brand, regex] of Object.entries(brands)) {
+      if (regex.test(num)) {
+        document.getElementById('card-brand').textContent = brand;
+        document.getElementById('card-brand').classList.add('show');
+        return brand;
+      }
+    }
+    
+    document.getElementById('card-brand').textContent = '';
+    document.getElementById('card-brand').classList.remove('show');
+    return '';
+  }
+
+  // Обновление сумм
+  function updateAmounts() {
+    const amount = parseFloat(document.getElementById('amount-input').value) || 0;
+    const commissionRate = calculateCommission(amount);
+    const commission = amount * commissionRate;
+    const net = amount - commission;
+    const usd = net / exchangeRate;
+    
+    document.getElementById('entered-amount').textContent = formatCurrency(amount, '₽');
+    document.getElementById('commission-amount').textContent = `${(commissionRate * 100).toFixed(1)}% (${formatCurrency(commission, '₽')})`;
+    document.getElementById('net-amount').textContent = formatCurrency(net, '₽');
+    document.getElementById('usd-amount').textContent = formatCurrency(usd, '$');
+  }
+
+  // Дебаунс
+  function debounce(func, timeout = 300) {
+    let timer;
+    return (...args) => {
+      clearTimeout(timer);
+      timer = setTimeout(() => func.apply(this, args), timeout);
+    };
+  }
+
+  // Получение курса валют
+  async function fetchExchangeRate() {
+    const cache = localStorage.getItem('exchangeRateCache');
+    const now = Date.now();
+    
+    if (cache) {
+      const { rate, timestamp } = JSON.parse(cache);
+      if (now - timestamp < 3600000) { // 1 час кэша
+        return rate;
+      }
+    }
+
+    try {
+      // В реальном приложении здесь должен быть запрос к API
+      // const response = await fetch('https://api.exchangerate-api.com/v4/latest/USD');
+      // const data = await response.json();
+      // const rate = data.rates.RUB || 75;
+      
+      const rate = 75; // Заглушка для демонстрации
+      localStorage.setItem('exchangeRateCache', JSON.stringify({
+        rate,
+        timestamp: now
+      }));
+      return rate;
+    } catch {
+      return 75;
+    }
+  }
+
+  // Инициализация страницы пополнения
+  async function initPaymentPage() {
+    exchangeRate = await fetchExchangeRate();
+    
+    // Загрузка сохраненных карт из localStorage
+    const storedCards = localStorage.getItem('userCards');
+    cards = storedCards ? JSON.parse(storedCards) : [
+      { 
+        id: '1', 
+        number: '•••• •••• •••• 3456', 
+        holder: 'IVAN IVANOV', 
+        expiry: '09/27', 
+        brand: 'VISA',
+        cvc: '123',
+        fullNumber: '4111111111111111'
+      },
+      { 
+        id: '2', 
+        number: '•••• •••• •••• 7890', 
+        holder: 'PETER PETROV', 
+        expiry: '11/26', 
+        brand: 'MC',
+        cvc: '456',
+        fullNumber: '5555555555554444'
+      }
+    ];
+
+    renderCarousel();
+    initPaymentEventListeners();
+    updateAmounts();
+  }
+
+  // Инициализация обработчиков событий для страницы пополнения
+  function initPaymentEventListeners() {
+    // Быстрый выбор суммы
+    document.querySelectorAll('.quick-amount').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.getElementById('amount-input').value = btn.dataset.amount;
+        updateAmounts();
+        triggerVibration();
+      });
+    });
+
+    // Ввод суммы
+    document.getElementById('amount-input').addEventListener('input', debounce(updateAmounts));
+
+    // Кнопка пополнения
+    document.getElementById('pay-btn').addEventListener('click', () => {
+      const amount = parseFloat(document.getElementById('amount-input').value);
+      
+      if (!amount || amount <= 0) {
+        alert('Введите сумму пополнения');
+        return;
+      }
+      
+      if (cards.length === 0) {
+        alert('Добавьте карту для пополнения');
+        return;
+      }
+      
+      // Обновляем баланс в каюте
+      const currentBalance = parseInt(document.getElementById('balance').textContent);
+      document.getElementById('balance').textContent = currentBalance + amount;
+      
+      // Показываем уведомление об успешном пополнении
+      showSuccessToast(amount);
+      
+      triggerVibration([100, 30, 100]);
+    });
+
+    // Форматирование номера карты
+    document.getElementById('card-number-input').addEventListener('input', (e) => {
+      const formatted = formatCardNumber(e.target.value);
+      if (e.target.value !== formatted) {
+        e.target.value = formatted;
+      }
+      detectCardBrand(e.target.value);
+    });
+
+    // Фиксированный ввод имени держателя
+    document.getElementById('card-holder-input').addEventListener('input', (e) => {
+      e.target.value = e.target.value.replace(/[^A-Za-z\s]/g, '').toUpperCase();
+    });
+
+    // Форматирование срока действия
+    document.getElementById('card-expiry-input').addEventListener('input', (e) => {
+      const value = e.target.value.replace(/\D/g,'');
+      if (value.length > 2) {
+        e.target.value = `${value.substring(0,2)}/${value.substring(2,4)}`;
+      } else {
+        e.target.value = value;
+      }
+    });
+
+    // Ввод CVC/CVV
+    document.getElementById('card-cvc-input').addEventListener('input', (e) => {
+      e.target.value = e.target.value.replace(/\D/g, '').substring(0, 4);
+    });
+
+    // Сохранение карты
+    document.getElementById('save-card-btn').addEventListener('click', () => {
+      const number = document.getElementById('card-number-input').value.trim();
+      const holder = document.getElementById('card-holder-input').value.trim().toUpperCase();
+      const expiry = document.getElementById('card-expiry-input').value.trim();
+      const cvc = document.getElementById('card-cvc-input').value.trim();
+      const brand = detectCardBrand(number) || 'UNKNOWN';
+
+      if (!number || number.replace(/\D/g,'').length < 16) {
+        alert('Введите корректный номер карты (16 цифр)');
+        return;
+      }
+      if (!holder) {
+        alert('Введите имя держателя карты');
+        return;
+      }
+      if (!expiry || !/^\d{2}\/\d{2}$/.test(expiry)) {
+        alert('Введите срок действия в формате MM/YY');
+        return;
+      }
+      if (!cvc || cvc.length < 3) {
+        alert('Введите корректный CVC/CVV код');
+        return;
+      }
+
+      // Форматируем номер для отображения
+      const maskedNumber = '•••• •••• •••• ' + number.slice(-4);
+      
+      // Проверяем, есть ли уже такая карта
+      const existingIndex = cards.findIndex(c => 
+        c.fullNumber === number.replace(/\D/g, '')
+      );
+      
+      if (existingIndex >= 0) {
+        // Обновляем существующую карту
+        cards[existingIndex] = {
+          ...cards[existingIndex],
+          holder,
+          expiry,
+          cvc,
+          brand
+        };
+        alert('Карта обновлена');
+      } else {
+        // Добавляем новую карту
+        const newCard = {
+          id: Date.now().toString(),
+          number: maskedNumber,
+          holder,
+          expiry,
+          brand,
+          cvc,
+          fullNumber: number.replace(/\D/g, '')
+        };
+        cards.push(newCard);
+        alert('Карта добавлена');
+      }
+      
+      // Сохраняем в localStorage
+      localStorage.setItem('userCards', JSON.stringify(cards));
+      
+      // Обновляем карусель
+      renderCarousel();
+      
+      // Закрываем модальное окно
+      hideAddCardModal();
+      triggerVibration();
+    });
+
+    // Удаление карты
+    document.getElementById('delete-card-btn').addEventListener('click', () => {
+      const number = document.getElementById('card-number-input').value.trim();
+      const cardIndex = cards.findIndex(c => 
+        c.fullNumber === number.replace(/\D/g, '')
+      );
+      
+      if (cardIndex >= 0) {
+        cards.splice(cardIndex, 1);
+        localStorage.setItem('userCards', JSON.stringify(cards));
+        alert('Карта удалена');
+        renderCarousel();
+        hideAddCardModal();
+        triggerVibration([50, 30, 50]);
+      } else {
+        alert('Карта не найдена');
+      }
+    });
+
+    // Закрытие модальных окон по клику на фон
+    document.querySelectorAll('.modal').forEach(modal => {
+      modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+          if (modal.id === 'add-card-modal') hideAddCardModal();
+        }
+      });
+    });
+
+    // Закрытие модальных окон по ESC
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        if (document.getElementById('add-card-modal').style.display === 'flex') {
+          hideAddCardModal();
+        }
+      }
+    });
+
+    // Кнопки навигации по картам
+    document.getElementById('prevBtn').onclick = () => {
+      selectedCard = Math.max(0, selectedCard - 1);
+      scrollToCard(selectedCard);
+      triggerVibration([20]);
+    };
+
+    document.getElementById('nextBtn').onclick = () => {
+      selectedCard = Math.min(cards.length - 1, selectedCard + 1);
+      scrollToCard(selectedCard);
+      triggerVibration([20]);
+    };
+
+    document.getElementById('enterDataBtn').onclick = () => {
+      showAddCardModal();
+    };
+
+    // Голосовой ввод суммы
+    document.getElementById('voiceInputBtn').addEventListener('click', () => {
+      if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+        const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+        recognition.lang = 'ru-RU';
+        recognition.interimResults = false;
+        recognition.maxAlternatives = 1;
+        
+        recognition.onresult = (e) => {
+          const transcript = e.results[0][0].transcript;
+          const amount = parseFloat(transcript.replace(',', '.').replace(/[^\d.]/g, ''));
+          if (!isNaN(amount)) {
+            document.getElementById('amount-input').value = amount.toFixed(2);
+            updateAmounts();
+            triggerVibration([50, 30]);
+          } else {
+            alert('Не удалось распознать сумму');
+          }
+        };
+        
+        recognition.onerror = (e) => {
+          alert('Ошибка распознавания: ' + e.error);
+        };
+        
+        recognition.start();
+        triggerVibration([30]);
+      } else {
+        alert('Голосовой ввод не поддерживается вашим браузером');
+      }
+    });
+  }
+
+  // Инициализация при загрузке
+  document.addEventListener('DOMContentLoaded', function() {
+    initUserData();
+    updateCalendar();
+  });
+</script>
+</body>
+</html>
