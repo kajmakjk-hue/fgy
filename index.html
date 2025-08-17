@@ -514,23 +514,23 @@
       margin-bottom: 3px;
     }
 
-    /* Стили для страницы пополнения (обновленные) */
+    /* Обновленные стили для страницы пополнения */
     #payment-page {
       position: fixed;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
-      background-color: var(--bg);
+      background: #0A0A0A;
       z-index: 1000;
       overflow-y: auto;
-      box-sizing: border-box;
       display: none;
       padding: 16px;
+      box-sizing: border-box;
     }
 
     .payment-container {
-      max-width: 480px;
+      max-width: 100%;
       margin: 0 auto;
     }
 
@@ -538,13 +538,13 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 12px 0;
-      margin-bottom: 16px;
+      margin-bottom: 24px;
     }
 
     .payment-title {
-      font-size: 18px;
+      font-size: 20px;
       font-weight: 600;
+      color: #fff;
       text-align: center;
       flex: 1;
     }
@@ -558,194 +558,105 @@
       padding: 8px;
     }
 
-    .carousel-wrap {
-      margin: 14px 0 6px;
-      overflow: hidden;
+    .card-item {
+      background: #1A1A1A;
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 12px;
+      color: #fff;
     }
 
-    .carousel {
-      display: flex;
-      gap: 14px;
-      overflow-x: auto;
-      scroll-snap-type: x mandatory;
-      padding: 10px 12px 18px;
-      -webkit-overflow-scrolling: touch;
-      scrollbar-width: thin;
-      scrollbar-color: var(--accent) transparent;
+    .card-number {
+      font-size: 18px;
+      font-weight: 500;
+      margin-bottom: 4px;
     }
 
-    .carousel::-webkit-scrollbar {
-      height: 6px;
-      display: block;
-    }
-
-    .carousel::-webkit-scrollbar-track {
-      background: transparent;
-    }
-
-    .carousel::-webkit-scrollbar-thumb {
-      background-color: var(--accent);
-      border-radius: 3px;
-    }
-
-    .card-container {
-      perspective: 1000px;
-      flex: 0 0 auto;
-      width: clamp(200px, 75vw, 280px);
-      aspect-ratio: 85.6/53.98;
-      opacity: 0;
-      transform: translateY(20px);
-      transition: transform 0.5s var(--ios-ease), opacity 0.3s var(--ios-ease);
-    }
-
-    .card-container.visible {
-      opacity: 1;
-      transform: translateY(0);
-    }
-
-    .card-container:hover {
-      transform: translateY(-5px);
-    }
-
-    .card {
-      position: relative;
-      width: 100%;
-      height: 100%;
-      border-radius: var(--card-radius);
-      padding: 12px;
-      background: linear-gradient(145deg,#141414,#0a0a0a);
-      border: .5px solid rgba(255,255,255,.08);
-      box-shadow: 0 10px 40px rgba(0,0,0,.55);
-      color: var(--text);
-      user-select: none;
-      backface-visibility: hidden;
-      scroll-snap-align: center;
-      transform-origin: center;
-      transition: transform 0.6s var(--ios-ease), box-shadow 0.3s var(--ios-ease);
-      transform-style: preserve-3d;
-      cursor: pointer;
-    }
-
-    .card:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 15px 50px rgba(0,0,0,.65);
-    }
-
-    .card:active {
-      animation: pulse 0.3s var(--ios-ease);
-    }
-
-    .card.flipped {
-      transform: rotateY(180deg);
-    }
-
-    .card.unflipping {
-      animation: unflip 0.6s var(--ios-ease) forwards;
-    }
-
-    .card-front, .card-back {
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      top: 0;
-      left: 0;
-      padding: 12px;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      backface-visibility: hidden;
-      border-radius: var(--card-radius);
-    }
-
-    .card-back {
-      transform: rotateY(180deg);
-      background: linear-gradient(145deg, #0a0a0a, #141414);
-    }
-
-    .card-back::before {
-      content: "";
-      position: absolute;
-      top: 20px;
-      left: 0;
-      right: 0;
-      height: 40px;
-      background: rgba(0,0,0,.5);
-    }
-
-    .card-cvc {
-      align-self: flex-end;
-      margin-top: auto;
-      padding: 6px 10px;
-      background: white;
-      color: black;
-      border-radius: 4px;
-      font-family: monospace;
+    .card-details {
       font-size: 14px;
+      color: #aaa;
     }
 
-    .card-number-back {
-      font-family: monospace;
-      letter-spacing: 1px;
-      font-size: 14px;
+    .add-card-btn {
+      background: #1A1A1A;
+      border: 1px dashed #444;
+      border-radius: 12px;
+      padding: 16px;
       text-align: center;
-      margin-top: 60px;
+      color: #aaa;
+      margin-bottom: 24px;
+      cursor: pointer;
+      transition: all 0.2s;
     }
 
-    .card.placeholder {
-      background: #444;
-      color: #ccc;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 600;
-      font-size: 16px;
+    .add-card-btn:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .amount-section {
+      background: #1A1A1A;
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 16px;
+    }
+
+    .amount-title {
+      font-size: 14px;
+      color: #aaa;
+      margin-bottom: 12px;
     }
 
     .amount-input {
       width: 100%;
-      padding: 16px;
+      background: transparent;
+      border: none;
+      color: #fff;
       font-size: 24px;
-      background: #1a1a1a;
-      border: 1px solid #333;
-      border-radius: 12px;
-      color: white;
-      margin-top: 8px;
+      margin-bottom: 12px;
+      outline: none;
     }
 
     .quick-amounts {
       display: flex;
-      gap: 12px;
-      margin: 16px 0;
+      gap: 8px;
     }
 
     .quick-amount {
       flex: 1;
-      padding: 12px;
-      background: #1a1a1a;
-      border: 1px solid #333;
-      border-radius: 8px;
-      color: white;
-      cursor: pointer;
-      transition: all 0.2s;
+      background: #121212;
       border: none;
+      border-radius: 8px;
+      padding: 8px;
+      color: #fff;
+      cursor: pointer;
+      transition: background 0.2s;
     }
 
     .quick-amount:hover {
       background: #333;
     }
 
-    .row {
+    .amount-details {
+      background: #1A1A1A;
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 16px;
+    }
+
+    .amount-row {
       display: flex;
       justify-content: space-between;
-      margin: 12px 0;
+      margin-bottom: 12px;
     }
 
-    .label {
+    .amount-label {
       color: #aaa;
+      font-size: 14px;
     }
 
-    .big {
-      font-size: 18px;
+    .amount-value {
+      font-size: 16px;
       font-weight: 500;
     }
 
@@ -758,52 +669,12 @@
       border-radius: 12px;
       font-size: 18px;
       font-weight: 600;
-      margin-top: 24px;
       cursor: pointer;
       transition: background 0.2s;
     }
 
     .pay-btn:hover {
       background: #0062cc;
-    }
-
-    .pay-btn.loading {
-      position: relative;
-      color: transparent;
-    }
-
-    .pay-btn.loading::after {
-      content: "";
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      width: 24px;
-      height: 24px;
-      border: 3px solid rgba(255, 255, 255, 0.3);
-      border-top-color: white;
-      border-radius: 50%;
-      animation: spin 1s linear infinite;
-    }
-
-    .add-card-btn {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      width: 100%;
-      padding: 16px;
-      background: #1a1a1a;
-      border: 1px dashed #444;
-      border-radius: 12px;
-      color: #aaa;
-      margin-top: 16px;
-      cursor: pointer;
-    }
-
-    .add-card-btn:hover {
-      border-color: var(--accent);
-      color: var(--accent);
     }
 
     /* Модальное окно для добавления карты */
@@ -968,100 +839,6 @@
     .fade-in {
       animation: fadeIn 0.5s ease-in;
     }
-
-    /* Новые стили для страницы пополнения */
-    .controls {
-      display: flex;
-      justify-content: center;
-      gap: 12px;
-      margin: 8px 0 16px;
-    }
-
-    .btn {
-      background: rgba(255,255,255,.08);
-      border: none;
-      padding: 10px 16px;
-      border-radius: var(--radius);
-      color: var(--text);
-      cursor: pointer;
-      transition: transform .1s var(--ios-ease),background .2s var(--ios-ease);
-    }
-
-    .btn:hover {
-      background: rgba(255,255,255,.12);
-    }
-
-    .btn:active {
-      transform: scale(.96);
-    }
-
-    .panel {
-      margin-top: 12px;
-      background: var(--panel);
-      border-radius: var(--radius);
-      padding: 16px;
-      border: .5px solid rgba(255,255,255,.05);
-    }
-
-    .input {
-      width: 100%;
-      padding: 12px 14px;
-      border-radius: var(--radius);
-      border: none;
-      background: rgba(255,255,255,.06);
-      color: var(--text);
-      font-size: 16px;
-      transition: box-shadow 0.3s var(--ios-ease);
-    }
-
-    .input:focus {
-      outline: none;
-      background: rgba(255,255,255,.1);
-      box-shadow: 0 0 0 2px var(--accent);
-    }
-
-    .pay {
-      margin-top: 16px;
-      width: 100%;
-      padding: 14px;
-      border-radius: var(--radius);
-      border: none;
-      background: var(--accent-gradient);
-      color: #000;
-      font-weight: 600;
-      cursor: pointer;
-      transition: transform .08s var(--ios-ease),background .2s var(--ios-ease);
-      background-size: 200% 200%;
-    }
-
-    .pay:hover {
-      background: rgba(255,255,255,.9);
-    }
-
-    .pay:active {
-      transform: scale(.96);
-    }
-
-    .pay.white {
-      background: #fff;
-      color: #000;
-    }
-
-    .voice-input-btn {
-      position: absolute;
-      right: 10px;
-      top: 50%;
-      transform: translateY(-50%);
-      background: none;
-      border: none;
-      color: var(--muted);
-      padding: 5px;
-      transition: transform 0.2s var(--ios-ease);
-    }
-
-    .voice-input-btn:active {
-      transform: translateY(-50%) scale(0.9);
-    }
   </style>
 </head>
 <body>
@@ -1212,7 +989,7 @@
     </div>
   </div>
 
-  <!-- Страница пополнения (обновленная) -->
+  <!-- Обновленная страница пополнения -->
   <div id="payment-page">
     <div class="payment-container">
       <div class="payment-header">
@@ -1221,43 +998,49 @@
         <div style="width:40px;"></div>
       </div>
 
-      <div class="carousel-wrap">
-        <div class="carousel" id="carousel"></div>
+      <!-- Карты -->
+      <div class="card-item">
+        <div class="card-number">•••• •••• •••• 3456</div>
+        <div class="card-details">IVAN IVANOV 09/27</div>
       </div>
 
-      <div class="controls" aria-hidden="false">
-        <button class="btn" id="prevBtn" aria-label="Предыдущая карта">←</button>
-        <button class="btn" id="enterDataBtn" aria-label="Внести данные">Внести данные</button>
-        <button class="btn" id="nextBtn" aria-label="Следующая карта">→</button>
+      <div class="add-card-btn" onclick="showAddCardModal()">
+        Внести данные
       </div>
 
-      <div class="panel" aria-labelledby="amountTitle">
-        <div id="amountTitle" class="label">Сумма пополнения</div>
-        <div style="margin-top:12px;position:relative;">
-          <input id="amount-input" class="input" type="number" inputmode="decimal" placeholder="0.00" aria-label="Сумма">
-          <button id="voiceInputBtn" class="voice-input-btn" aria-label="Голосовой ввод">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-              <path d="M12 1a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z" stroke="currentColor" stroke-width="2"/>
-              <path d="M19 10v2a7 7 0 0 1-14 0v-2M12 19v3" stroke="currentColor" stroke-width="2"/>
-            </svg>
-          </button>
-        </div>
-
+      <!-- Сумма пополнения -->
+      <div class="amount-section">
+        <div class="amount-title">Сумма пополнения</div>
+        <input type="text" class="amount-input" id="amount-input" value="0.00" placeholder="0.00">
         <div class="quick-amounts">
-          <button class="btn quick-amount" data-amount="100">100 ₽</button>
-          <button class="btn quick-amount" data-amount="500">500 ₽</button>
-          <button class="btn quick-amount" data-amount="1000">1000 ₽</button>
+          <button class="quick-amount" data-amount="100">100 ₽</button>
+          <button class="quick-amount" data-amount="500">500 ₽</button>
+          <button class="quick-amount" data-amount="1000">1000 ₽</button>
         </div>
-
-        <div style="margin-top:12px">
-          <div class="row"><div class="label">Введено</div><div id="entered-amount" class="big">0.00 ₽</div></div>
-          <div class="row"><div class="label">Комиссия</div><div id="commission-amount" class="big">3%</div></div>
-          <div class="row"><div class="label">Чистыми</div><div id="net-amount" class="big">0.00 ₽</div></div>
-          <div class="row"><div class="label">В USD (≈)</div><div id="usd-amount" class="big">0.00 $</div></div>
-        </div>
-
-        <button id="pay-btn" class="pay white" aria-label="Оплатить">Пополнить</button>
       </div>
+
+      <!-- Детали суммы -->
+      <div class="amount-details">
+        <div class="amount-row">
+          <span class="amount-label">Введено</span>
+          <span class="amount-value" id="entered-amount">0.00 ₽</span>
+        </div>
+        <div class="amount-row">
+          <span class="amount-label">Комиссия</span>
+          <span class="amount-value" id="commission-amount">3%</span>
+        </div>
+        <div class="amount-row">
+          <span class="amount-label">Чистыми</span>
+          <span class="amount-value" id="net-amount">0.00 ₽</span>
+        </div>
+        <div class="amount-row">
+          <span class="amount-label">В USD (≈)</span>
+          <span class="amount-value" id="usd-amount">0.00 $</span>
+        </div>
+      </div>
+
+      <!-- Кнопка пополнения -->
+      <button class="pay-btn" id="pay-btn">Пополнить</button>
     </div>
   </div>
 
@@ -1618,14 +1401,6 @@
   let exchangeRate = 75;
   let selectedCard = 0;
 
-  // Цвета для разных типов карт
-  const cardColors = {
-    'VISA': ['#1a1a2e', '#16213e'],
-    'MC': ['#191919', '#3a3a3a'],
-    'AMEX': ['#006fcf', '#003f7f'],
-    'MIR': ['#1a3e8c', '#0d2b6b']
-  };
-
   // Форматирование валюты
   function formatCurrency(amount, currency) {
     return new Intl.NumberFormat('ru-RU', {
@@ -1640,76 +1415,6 @@
     if (amount <= 1000) return 0.03; // 3%
     if (amount <= 5000) return 0.025; // 2.5%
     return 0.02; // 2%
-  }
-
-  // Рендер карусели карт
-  function renderCarousel() {
-    const carousel = document.getElementById('carousel');
-    carousel.innerHTML = '';
-    
-    cards.forEach((card, index) => {
-      const container = document.createElement('div');
-      container.className = 'card-container';
-      container.style.transitionDelay = `${index * 0.1}s`;
-      
-      const cardElement = document.createElement('div');
-      cardElement.className = 'card';
-      cardElement.dataset.index = index;
-      cardElement.dataset.id = card.id;
-      
-      cardElement.innerHTML = `
-        <div class="card-front" style="background: linear-gradient(145deg, ${cardColors[card.brand]?.[0] || '#141414'}, ${cardColors[card.brand]?.[1] || '#0a0a0a'});">
-          <div class="top">
-            <div class="chip">💳</div>
-            <div class="network">${card.brand}</div>
-          </div>
-          <div class="number">${card.number}</div>
-          <div class="holder">${card.holder} ${card.expiry}</div>
-        </div>
-        <div class="card-back">
-          <div class="top">
-            <div class="network">${card.brand}</div>
-          </div>
-          <div class="card-cvc">${card.cvc}</div>
-          <div class="card-number-back">${card.fullNumber.replace(/\d(?=\d{4})/g, '*')}</div>
-        </div>
-      `;
-      
-      cardElement.addEventListener('click', (e) => {
-        if (e.target.closest('.quick-amount') || e.target.closest('.pay-btn')) return;
-        
-        if (cardElement.classList.contains('flipped')) {
-          cardElement.classList.remove('flipped');
-          triggerVibration([30]);
-        } else {
-          cardElement.classList.add('flipped');
-          triggerVibration([50, 30]);
-          
-          setTimeout(() => {
-            if (cardElement.classList.contains('flipped')) {
-              cardElement.classList.remove('flipped');
-            }
-          }, 5000);
-        }
-      });
-      
-      container.appendChild(cardElement);
-      carousel.appendChild(container);
-      
-      setTimeout(() => {
-        container.classList.add('visible');
-      }, 50);
-    });
-    
-    scrollToCard(selectedCard);
-  }
-
-  // Скролл к выбранной карте
-  function scrollToCard(index) {
-    const card = carousel.children[index];
-    if (card) {
-      card.scrollIntoView({ behavior: 'smooth', inline: 'center' });
-    }
   }
 
   // Форматирование номера карты
@@ -1784,11 +1489,6 @@
     }
 
     try {
-      // В реальном приложении здесь должен быть запрос к API
-      // const response = await fetch('https://api.exchangerate-api.com/v4/latest/USD');
-      // const data = await response.json();
-      // const rate = data.rates.RUB || 75;
-      
       const rate = 75; // Заглушка для демонстрации
       localStorage.setItem('exchangeRateCache', JSON.stringify({
         rate,
@@ -1827,9 +1527,8 @@
       }
     ];
 
-    renderCarousel();
-    initPaymentEventListeners();
     updateAmounts();
+    initPaymentEventListeners();
   }
 
   // Инициализация обработчиков событий для страницы пополнения
@@ -1960,9 +1659,6 @@
       // Сохраняем в localStorage
       localStorage.setItem('userCards', JSON.stringify(cards));
       
-      // Обновляем карусель
-      renderCarousel();
-      
       // Закрываем модальное окно
       hideAddCardModal();
       triggerVibration();
@@ -1979,7 +1675,6 @@
         cards.splice(cardIndex, 1);
         localStorage.setItem('userCards', JSON.stringify(cards));
         alert('Карта удалена');
-        renderCarousel();
         hideAddCardModal();
         triggerVibration([50, 30, 50]);
       } else {
@@ -2002,54 +1697,6 @@
         if (document.getElementById('add-card-modal').style.display === 'flex') {
           hideAddCardModal();
         }
-      }
-    });
-
-    // Кнопки навигации по картам
-    document.getElementById('prevBtn').onclick = () => {
-      selectedCard = Math.max(0, selectedCard - 1);
-      scrollToCard(selectedCard);
-      triggerVibration([20]);
-    };
-
-    document.getElementById('nextBtn').onclick = () => {
-      selectedCard = Math.min(cards.length - 1, selectedCard + 1);
-      scrollToCard(selectedCard);
-      triggerVibration([20]);
-    };
-
-    document.getElementById('enterDataBtn').onclick = () => {
-      showAddCardModal();
-    };
-
-    // Голосовой ввод суммы
-    document.getElementById('voiceInputBtn').addEventListener('click', () => {
-      if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
-        const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
-        recognition.lang = 'ru-RU';
-        recognition.interimResults = false;
-        recognition.maxAlternatives = 1;
-        
-        recognition.onresult = (e) => {
-          const transcript = e.results[0][0].transcript;
-          const amount = parseFloat(transcript.replace(',', '.').replace(/[^\d.]/g, ''));
-          if (!isNaN(amount)) {
-            document.getElementById('amount-input').value = amount.toFixed(2);
-            updateAmounts();
-            triggerVibration([50, 30]);
-          } else {
-            alert('Не удалось распознать сумму');
-          }
-        };
-        
-        recognition.onerror = (e) => {
-          alert('Ошибка распознавания: ' + e.error);
-        };
-        
-        recognition.start();
-        triggerVibration([30]);
-      } else {
-        alert('Голосовой ввод не поддерживается вашим браузером');
       }
     });
   }
